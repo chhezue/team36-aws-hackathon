@@ -145,3 +145,30 @@ class RestaurantInfo(models.Model):
 
     def __str__(self):
         return f"{self.business_name} ({self.business_type})"
+
+class LocalIssue(models.Model):
+    SOURCE_CHOICES = [
+        ('youtube', '유튜브'),
+        ('naver_search', '네이버 검색'),
+        ('naver_news', '네이버 뉴스'),
+    ]
+    
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, verbose_name="지역")
+    source = models.CharField(max_length=20, choices=SOURCE_CHOICES, verbose_name="출처")
+    title = models.TextField(verbose_name="제목")
+    url = models.URLField(verbose_name="URL")
+    view_count = models.IntegerField(default=0, verbose_name="조회수")
+    published_at = models.DateTimeField(null=True, blank=True, verbose_name="게시일시")
+    collected_at = models.DateTimeField(auto_now_add=True, verbose_name="수집일시")
+    
+    class Meta:
+        db_table = 'local_issues'
+        indexes = [
+            models.Index(fields=['location', 'source', 'collected_at']),
+            models.Index(fields=['view_count']),
+        ]
+        verbose_name = "동네 이슈"
+        verbose_name_plural = "동네 이슈들"
+    
+    def __str__(self):
+        return f"{self.location} - {self.title[:50]}"

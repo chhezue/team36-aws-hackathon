@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load format_filters %}
 
 {% block title %}LocalBriefing - 오늘의 브리핑{% endblock %}
 
@@ -26,20 +27,7 @@
         </div>
     </div>
 
-    <!-- District News - Medium Card -->
-    <div class="bento-item district-medium">
-        <div class="glass-card">
-            <div class="card-header-minimal">
-                <span class="clay-icon">📢</span>
-                <span class="card-title-bold">구청 소식</span>
-            </div>
-            <div class="news-list">
-                {% for news in district_news %}
-                <div class="news-item">{{ news }}</div>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
+
 
     <!-- Community Issues - Wide Card -->
     <div class="bento-item community-wide">
@@ -49,39 +37,88 @@
                 <span class="card-title-bold">동네 이슈</span>
             </div>
             <div class="community-preview">
-                <div class="issue-item">🚧 역삼역 근처 공사로 교통 혼잡</div>
-                <div class="issue-item">☕ 새로 생긴 카페 후기 좋음</div>
+                {% if local_issues.youtube %}
+                    {% for issue in local_issues.youtube %}
+                    <div class="issue-item" onclick="window.open('{{ issue.url }}', '_blank')">
+                        📺 {{ issue.title|truncatechars:50 }}
+                        {% if issue.view_count > 0 %}<span class="view-count">{{ issue.view_count|format_view_count }}</span>{% endif %}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+                {% if local_issues.naver_search %}
+                    {% for issue in local_issues.naver_search %}
+                    <div class="issue-item" onclick="window.open('{{ issue.url }}', '_blank')">
+                        🔍 {{ issue.title|truncatechars:50 }}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+                {% if local_issues.naver_news %}
+                    {% for issue in local_issues.naver_news %}
+                    <div class="issue-item" onclick="window.open('{{ issue.url }}', '_blank')">
+                        📰 {{ issue.title|truncatechars:50 }}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+                {% if not local_issues.youtube and not local_issues.naver_search and not local_issues.naver_news %}
+                    <div class="issue-item">🚧 역삼역 근처 공사로 교통 혼잡</div>
+                    <div class="issue-item">☕ 새로 생긴 카페 후기 좋음</div>
+                {% endif %}
             </div>
         </div>
     </div>
 
-    <!-- Restaurants - Small Card -->
-    <div class="bento-item restaurants-small">
+    <!-- Popular Restaurants - Full Width -->
+    <div class="bento-item restaurants-wide">
         <div class="glass-card">
             <div class="card-header-minimal">
                 <span class="clay-icon">🍽️</span>
-                <span class="card-title-compact">맛집 정보</span>
+                <span class="card-title-bold">맛집 정보</span>
             </div>
-            <div class="restaurant-preview">
-                <div class="item-text">24시간 족발집 인기</div>
-                <div class="item-text">디저트 카페 할인 이벤트</div>
+            <div class="restaurant-list">
+                {% if popular_restaurants %}
+                    {% for restaurant in popular_restaurants %}
+                    <div class="restaurant-item" onclick="window.open('{{ restaurant.place_url }}', '_blank')">
+                        <div class="restaurant-info">
+                            <div class="restaurant-name">{{ restaurant.name }}</div>
+                        </div>
+                        <div class="restaurant-meta">
+                            <span class="restaurant-type">{{ restaurant.category|default:"음식점" }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="skeleton-item"></div>
+                    <div class="skeleton-item"></div>
+                    <div class="skeleton-item"></div>
+                {% endif %}
             </div>
         </div>
     </div>
 
-    <!-- New Restaurants - Small Card -->
-    <div class="bento-item new-restaurants-small">
+    <!-- New Restaurants - Full Width -->
+    <div class="bento-item new-restaurants-wide">
         <div class="glass-card">
             <div class="card-header-minimal">
                 <span class="clay-icon">🆕</span>
-                <span class="card-title-compact">신장 개업 음식점</span>
+                <span class="card-title-bold">신장 개업 음식점</span>
             </div>
-            <div class="restaurant-count">
-                {% if new_restaurants|length > 0 %}
-                    <span class="count-number">{{ new_restaurants|length }}</span>
-                    <span class="count-label">곳</span>
+            <div class="restaurant-list">
+                {% if new_restaurants %}
+                    {% for restaurant in new_restaurants %}
+                    <div class="restaurant-item" onclick="{% if restaurant.place_url %}window.open('{{ restaurant.place_url }}', '_blank'){% endif %}">
+                        <div class="restaurant-info">
+                            <div class="restaurant-name">{{ restaurant.name }}</div>
+                            <div class="restaurant-category">{{ restaurant.category|default:"음식점" }}</div>
+                        </div>
+                        <div class="restaurant-meta">
+                            <span class="opening-date">개업일: {{ restaurant.license_date|default:"미상" }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
                 {% else %}
-                    <span class="loading-text">준비중...</span>
+                    <div class="skeleton-item"></div>
+                    <div class="skeleton-item"></div>
+                    <div class="skeleton-item"></div>
                 {% endif %}
             </div>
         </div>

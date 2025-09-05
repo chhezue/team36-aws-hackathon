@@ -4,7 +4,9 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth import login
 from django.conf import settings
-from .models import User
+from .models import User, Location, LocalIssue
+from datetime import datetime, date, timedelta
+from django.utils import timezone
 
 def kakao_login(request):
     kakao_auth_url = f"https://kauth.kakao.com/oauth/authorize?client_id={settings.KAKAO_CLIENT_ID}&redirect_uri=http://127.0.0.1:8000/users/kakao/callback/&response_type=code"
@@ -107,3 +109,78 @@ def naver_callback(request):
 
 def email_login(request):
     return redirect('/briefing/')
+
+def briefing_view(request):
+    import logging
+    logger = logging.getLogger(__name__)
+    
+    logger.info("=== 브리핑 뷰 시작 ===")
+    
+    # 실제 음식점 데이터 가져오기
+    try:
+        from restaurants.views import get_restaurant_data
+        restaurant_data = get_restaurant_data('강남구')
+        new_restaurants = restaurant_data.get('new_restaurants', [])
+        popular_restaurants = restaurant_data.get('popular_restaurants', [])
+        
+        logger.info(f"브리핑에서 받은 데이터: 신설 {len(new_restaurants)}개, 인기 {len(popular_restaurants)}개")
+        
+    except Exception as e:
+        logger.error(f"음식점 데이터 로딩 오류: {str(e)}")
+        new_restaurants = []
+        popular_restaurants = []
+    
+    # 기본 사용자 위치 (강남구)
+    try:
+        location = Location.objects.get(gu='강남구')
+    except Location.DoesNotExist:
+        location = Location.objects.create(gu='강남구')
+    
+    # 7일 이내 데이터만 조회
+    seven_days_ago = timezone.now() - timedelta(days=7)
+    
+    # 소스별로 동네 이슈 데이터 조회 (최대 5개, 7일 이내)
+    youtube_issues = LocalIssue.objects.filter(
+        location=location, source='youtube', 
+        collected_at__gte=seven_days_ago,
+        published_at__gte=seven_days_ago
+    ).order_by('-view_count', '-collected_at')[:5]
+    
+    naver_search_issues = LocalIssue.objects.filter(
+        location=location, source='naver_search', 
+        collected_at__gte=seven_days_ago,
+        published_at__gte=seven_days_ago
+    ).order_by('-collected_at')[:5]
+    
+    naver_news_issues = LocalIssue.objects.filter(
+        location=location, source='naver_news', 
+        collected_at__gte=seven_days_ago,
+        published_at__gte=seven_days_ago
+    ).order_by('-collected_at')[:5]
+    
+    briefing_data = {
+        'user_name': '김철수',
+        'location': '강남구 역삼동',
+        'date': '2024년 3월 15일 금요일',
+        'weather': {
+            'condition': '맑음',
+            'temp': '18°C',
+            'dust': '보통',
+            'description': '외출하기 좋은 날씨예요'
+        },
+        'district_news': [
+            '역삼동 도서관 리모델링 완료',
+            '3월 말까지 무료 독감 예방접종',
+            '어린이집 입소 대기자 모집'
+        ],
+        'new_restaurants': new_restaurants,
+        'popular_restaurants': popular_restaurants,
+        'local_issues': {
+            'youtube': youtube_issues,
+            'naver_search': naver_search_issues,
+            'naver_news': naver_news_issues,
+        }
+    }
+    
+    logger.info("브리핑 데이터 준비 완료")
+    return render(request, 'briefing.html', briefing_data)

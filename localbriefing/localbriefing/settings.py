@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users',
+    'restaurants',
 ]
 
 MIDDLEWARE = [
@@ -73,7 +74,26 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # 커스텀 사용자 모델
 AUTH_USER_MODEL = 'users.User'
 
+# API 키 설정
+SEOUL_API_KEY = os.environ.get('SEOUL_API_KEY')
+KAKAO_API_KEY = os.environ.get('KAKAO_API_KEY')
+
 # 소셜 로그인 설정
 KAKAO_CLIENT_ID = os.environ.get('KAKAO_CLIENT_ID')
-NAVER_CLIENT_ID = os.environ.get('NAVER_CLIENT_ID')
-NAVER_CLIENT_SECRET = os.environ.get('NAVER_CLIENT_SECRET')
+NAVER_CLIENT_ID = os.environ.get('NAVER_LOGIN_CLIENT_ID')
+NAVER_CLIENT_SECRET = os.environ.get('NAVER_LOGIN_CLIENT_SECRET')
+
+# 로깅 설정
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}

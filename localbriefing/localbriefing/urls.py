@@ -3,7 +3,12 @@ from django.urls import path, include
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from restaurants.views import get_restaurant_data
+from users.views import briefing_view as users_briefing_view
+try:
+    from restaurants.views import get_restaurant_data
+except ImportError:
+    def get_restaurant_data(district):
+        return {'new_restaurants': [], 'popular_restaurants': []}
 
 # 서울시 구/동 데이터
 SEOUL_DISTRICTS = {
@@ -52,22 +57,12 @@ def briefing_view(request):
     # 실제 음식점 데이터 가져오기
     try:
         restaurant_data = get_restaurant_data('강남구')
-        
-        # 신설 음식점 포맷팅
-        new_restaurants = []
-        for r in restaurant_data['new_restaurants']:
-            new_restaurants.append(f"{r['name']} ({r['license_date']})")
-        
-        # 인기 맛집 포맷팅
-        popular_restaurants = []
-        for r in restaurant_data['popular_restaurants']:
-            popular_restaurants.append(f"{r['name']} ({r.get('category', '음식점')})")
-            
+        new_restaurants = restaurant_data.get('new_restaurants', [])
+        popular_restaurants = restaurant_data.get('popular_restaurants', [])
     except Exception as e:
-        error_msg = f"음식점 데이터 로딩 오류: {str(e)}"
-        print(error_msg)
-        new_restaurants = [error_msg]
-        popular_restaurants = [error_msg]
+        print(f"음식점 데이터 로딩 오류: {str(e)}")
+        new_restaurants = []
+        popular_restaurants = []
     
     briefing_data = {
         'user_name': '김철수',
@@ -84,9 +79,8 @@ def briefing_view(request):
             '3월 말까지 무료 독감 예방접종',
             '어린이집 입소 대기자 모집'
         ],
-
-        'new_restaurants': new_restaurants or ['신설 음식점 정보를 불러오는 중...'],
-        'popular_restaurants': popular_restaurants or ['인기 맛집 정보를 불러오는 중...']
+        'new_restaurants': new_restaurants,
+        'popular_restaurants': popular_restaurants
     }
     return render(request, 'briefing.html', briefing_data)
 
@@ -121,7 +115,7 @@ def glassmorphism_login_view(request):
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', onboarding_view, name='onboarding'),
-    path('briefing/', briefing_view, name='briefing'),
+    path('briefing/', users_briefing_view, name='briefing'),
     path('settings/', settings_view, name='settings'),
     path('glassmorphism/', glassmorphism_demo_view, name='glassmorphism_demo'),
     path('login/', glassmorphism_login_view, name='glassmorphism_login'),

@@ -1,3 +1,12 @@
+# LocalBriefing Project .gitignore
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
 # Python
 __pycache__/
 *.py[cod]
@@ -19,6 +28,12 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
 # Django
 *.log
@@ -27,15 +42,23 @@ db.sqlite3
 db.sqlite3-journal
 media/
 staticfiles/
+server.log
 
-# Environment variables
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+# Next.js
+/.next/
+/out/
+next-env.d.ts
+.next
+.vercel
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+.pnpm-debug.log*
 
 # IDE
 .vscode/
@@ -57,12 +80,6 @@ Thumbs.db
 .aws/
 *.pem
 
-# Node.js (if using frontend tools)
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
 # Logs
 logs/
 *.log
@@ -75,3 +92,21 @@ coverage.xml
 *.cover
 .hypothesis/
 .pytest_cache/
+
+# TypeScript
+*.tsbuildinfo
+
+# ESLint
+.eslintcache
+
+# Temporary files
+*.tmp
+*.temp
+
+# Local data cache
+/backend/local_data/cache/
+/backend/crawling_data/
+
+# Production builds
+/frontend/build/
+/frontend/dist/

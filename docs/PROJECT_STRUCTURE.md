@@ -1,86 +1,82 @@
-# LocalBriefing 프로젝트 구조 (정리 완료)
+# LocalBriefing 프로젝트 구조
 
 ```
 team36-aws-hackathon/
-├── docs/                           # 📋 프로젝트 문서
-│   ├── PROJECT_OVERVIEW.md         # 프로젝트 개요
-│   ├── ARCHITECTURE.md             # 시스템 아키텍처
-│   ├── DATABASE.md                 # 데이터베이스 설계
-│   ├── AWS_INTEGRATION.md          # AWS 서비스 연동
-│   ├── SOCIAL_LOGIN_SETUP.md       # 소셜 로그인 설정 가이드
-│   └── IMPLEMENTATION_PLAN.md      # 구현 계획
+├── .amazonq/                       # Amazon Q 설정
+│   └── rules/hackathon.md
 │
-├── localbriefing/                  # 🌐 Django 웹 애플리케이션
+├── backend/                        # 🌐 Django 백엔드
 │   ├── localbriefing/              # Django 프로젝트 설정
 │   │   ├── settings.py             # Django 설정
 │   │   ├── urls.py                 # URL 라우팅
 │   │   └── wsgi.py                 # WSGI 설정
 │   │
-│   ├── users/                      # 👤 사용자 관리 앱
-│   │   ├── models.py               # 사용자, 지역, 브리핑 모델
-│   │   ├── views.py                # 소셜 로그인 뷰
-│   │   ├── urls.py                 # 사용자 URL 패턴
+│   ├── local_data/                 # 📊 데이터 모델 및 처리
+│   │   ├── models.py               # 데이터베이스 모델
 │   │   ├── crawlers.py             # 동네 이슈 크롤링
-│   │   └── management/             # Django 관리 명령어
-│   │       └── commands/
-│   │           └── crawl_local_issues.py  # 동네 이슈 크롤링 명령어
+│   │   ├── sentiment_analyzer.py   # 감성 분석
+│   │   └── management/commands/    # Django 관리 명령어
 │   │
-│   ├── templates/                  # 🎨 HTML 템플릿
-│   │   ├── base.html               # 기본 템플릿
-│   │   ├── onboarding.html         # 온보딩 페이지 (테마 선택 포함)
-│   │   ├── briefing.html           # 브리핑 페이지
-│   │   └── settings.html           # 설정 페이지
+│   ├── rest_api/                   # 🚀 REST API
+│   │   ├── views/                  # API 뷰
+│   │   └── serializers/            # 데이터 직렬화
 │   │
-│   ├── static/                     # 📁 정적 파일
-│   │   ├── css/style.css           # 스타일시트
-│   │   ├── js/app.js               # JavaScript
-│   │   ├── icons/favicon.svg       # 파비콘
-│   │   └── manifest.json           # PWA 매니페스트
+│   ├── crawling_scripts/           # 🔍 데이터 수집
+│   │   ├── method1_recent_restaurants/
+│   │   └── method2_popular_restaurants/
 │   │
-│   ├── .env                        # 🔐 환경변수 (소셜 로그인 키)
 │   └── manage.py                   # Django 관리 스크립트
 │
-├── data_sources/                   # 📊 데이터 수집 모듈
-│   ├── method1_recent_restaurants/ # 최신 음식점 데이터
-│   ├── method2_popular_restaurants/# 인기 음식점 데이터
-│   └── load_env.py                 # 환경변수 로더
+├── frontend/                       # ⚛️ React/Next.js 프론트엔드
+│   ├── src/
+│   │   ├── app/                    # Next.js App Router
+│   │   ├── components/             # React 컴포넌트
+│   │   ├── hooks/                  # 커스텀 훅
+│   │   ├── lib/                    # 유틸리티
+│   │   └── types/                  # TypeScript 타입
+│   │
+│   ├── package.json
+│   ├── next.config.js
+│   └── tailwind.config.js
 │
-├── scripts/                        # 🔧 유틸리티 스크립트
-│   ├── main.py                     # 메인 실행 스크립트
-│   ├── test_all_districts.py       # 전체 구 테스트
-│   └── test_districts.py           # 구별 테스트
+├── docs/                           # 📋 프로젝트 문서
+│   ├── PROJECT_OVERVIEW.md         # 프로젝트 개요
+│   ├── ARCHITECTURE.md             # 시스템 아키텍처
+│   ├── DATABASE.md                 # 데이터베이스 설계
+│   ├── AWS_INTEGRATION.md          # AWS 서비스 연동
+│   ├── REMOVED_FEATURES.md         # 제거된 기능 목록
+│   └── RESTAURANT_API_IMPROVEMENTS.md # 맛집 API 개선사항
 │
-├── config/                         # ⚙️ 개발 도구 설정
-│   ├── .editorconfig               # 에디터 설정
-│   ├── .prettierrc                 # 코드 포맷터 설정
-│   └── eslint.config.js            # 린터 설정
-│
-├── requirements.txt                # 📦 Python 패키지 의존성
-├── README.md                       # 📖 프로젝트 설명서
-└── .gitignore                      # 🚫 Git 제외 파일
+├── .env                            # 🔐 환경변수
+├── .env.example                    # 환경변수 템플릿
+├── requirements.txt                # 📦 Python 의존성
+├── load_env.py                     # 환경변수 로더
+└── README.md                       # 📖 프로젝트 설명서
 ```
 
 ## 핵심 디렉토리 설명
 
-### 🌐 localbriefing/
-Django 웹 애플리케이션의 메인 디렉토리
-- **users/**: 사용자 관리, 소셜 로그인, 동네 이슈 크롤링 기능
-- **templates/**: 모바일 최적화 UI 템플릿 (테마 선택 기능 포함)
-- **static/**: CSS/JS 정적 파일, PWA 지원
+### 🌐 backend/
+Django 백엔드 애플리케이션
+- **local_data/**: 데이터 모델, 크롤링, 감성 분석 기능
+- **rest_api/**: Django REST Framework API 엔드포인트
+- **crawling_scripts/**: 데이터 수집 스크립트
 
-### 📊 data_sources/
-데이터 수집 및 처리 모듈
-- 서울시 음식점 API 연동
-- 구청 공지사항 크롤링 준비
+### ⚛️ frontend/
+React/Next.js 프론트엔드 애플리케이션
+- **src/app/**: Next.js 13+ App Router 기반 페이지
+- **src/components/**: 재사용 가능한 React 컴포넌트
+- **TypeScript + Tailwind CSS**: 타입 안전성 및 스타일링
 
 ### 📋 docs/
 프로젝트 설계 문서 및 가이드
 - AWS 아키텍처 설계
 - 데이터베이스 스키마
-- 소셜 로그인 설정 가이드
+- 기능 개선 사항 및 제거된 기능 기록
 
-### 🔧 scripts/
-테스트 및 유틸리티 스크립트
+## 주요 변경사항
 
-### ⚙️ config/
-개발 도구 설정 파일들
+1. **사용자 인증 시스템 제거**: 비회원 서비스로 전환
+2. **프론트엔드 추가**: React/Next.js 기반 모던 UI
+3. **데이터 모델 강화**: 감성 분석 및 동네 이슈 추가
+4. **API 구조 개선**: REST API 엔드포인트 별도 구성

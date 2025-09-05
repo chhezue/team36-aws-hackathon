@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %}LocalBriefing - 설정{% endblock %}
+
+{% block content %}
+<div class="header">
+    <div class="logo">⚙️ 설정</div>
+</div>
+
+<div class="settings-section">
+    <div class="settings-title">👤 계정 정보</div>
+    <div class="settings-item">
+        <div>
+            <div>이메일: user@example.com</div>
+            <div style="font-size: 14px; color: var(--text-secondary);">가입일: 2024.03.01</div>
+        </div>
+        <button class="btn btn-secondary" style="width: auto; padding: 8px 16px;">비밀번호 변경</button>
+    </div>
+</div>
+
+<div class="settings-section">
+    <div class="settings-title">📍 거주지 설정</div>
+    <div class="settings-item">
+        <div>
+            <div>현재: 강남구 역삼동</div>
+        </div>
+        <button class="btn btn-secondary" style="width: auto; padding: 8px 16px;">위치 변경</button>
+    </div>
+</div>
+
+<div class="settings-section">
+    <div class="settings-title">📋 브리핑 설정</div>
+    <div class="settings-item">
+        <div>☀️ 날씨 정보</div>
+        <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
+    </div>
+    <div class="settings-item">
+        <div>📢 구청 공지사항</div>
+        <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
+    </div>
+    <div class="settings-item">
+        <div>💬 커뮤니티 이슈</div>
+        <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
+    </div>
+    <div class="settings-item">
+        <div>🥕 중고거래</div>
+        <div class="toggle-switch" onclick="toggleSwitch(this)"></div>
+    </div>
+    <div class="settings-item">
+        <div>🍽️ 맛집 정보</div>
+        <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
+    </div>
+</div>
+
+<div class="settings-section">
+    <div class="settings-title">🔔 알림 설정</div>
+    <div class="settings-item">
+        <div>브리핑 알림 시간</div>
+        <select class="form-select" style="width: 120px;">
+            <option value="07:00" selected>오전 7:00</option>
+            <option value="08:00">오전 8:00</option>
+            <option value="09:00">오전 9:00</option>
+        </select>
+    </div>
+    <div class="settings-item">
+        <div>주말 알림</div>
+        <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
+    </div>
+</div>
+
+<div class="settings-section">
+    <div class="settings-title">ℹ️ 기타</div>
+    <div class="settings-item">
+        <div>이용약관</div>
+        <span style="color: var(--text-secondary);">></span>
+    </div>
+    <div class="settings-item">
+        <div>개인정보처리방침</div>
+        <span style="color: var(--text-secondary);">></span>
+    </div>
+    <div class="settings-item">
+        <div>문의하기</div>
+        <span style="color: var(--text-secondary);">></span>
+    </div>
+    <div class="settings-item">
+        <div style="color: var(--error);">로그아웃</div>
+        <span style="color: var(--text-secondary);">></span>
+    </div>
+</div>
+
+<div class="nav-buttons">
+    <button class="btn btn-primary" onclick="location.href='/briefing/'">브리핑으로 돌아가기</button>
+</div>
+{% endblock %}

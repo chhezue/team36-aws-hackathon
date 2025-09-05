@@ -58,12 +58,51 @@ AI 처리 전 수집된 원본 텍스트 데이터를 저장합니다.
 |--------|-------------|----------|------|
 | id | SERIAL | PRIMARY KEY | 원시 데이터 고유 ID |
 | location_id | INTEGER | FOREIGN KEY, NOT NULL | 지역 참조 |
-| source_url | TEXT | NOT NULL | 데이터 출처 URL |
+| source_url | TEXT | | 데이터 출처 URL |
 | category | VARCHAR(50) | NOT NULL | 데이터 카테고리 |
 | title | TEXT | | 제목 |
 | content | TEXT | NOT NULL | 원본 텍스트 내용 |
 | collected_at | TIMESTAMP | DEFAULT NOW() | 수집일시 |
 | processed | BOOLEAN | DEFAULT FALSE | AI 처리 완료 여부 |
+
+### 2.5 DistrictAnnouncement (구청 공지사항)
+강남구 공지사항 및 행사정보를 저장합니다.
+
+| 컬럼명 | 데이터 타입 | 제약조건 | 설명 |
+|--------|-------------|----------|------|
+| id | SERIAL | PRIMARY KEY | 공지사항 고유 ID |
+| location_id | INTEGER | FOREIGN KEY, NOT NULL | 지역 참조 |
+| board_type | VARCHAR(50) | | 게시판 종류 (행사정보, 공지사항 등) |
+| post_number | VARCHAR(20) | | 게시물 번호 |
+| title | TEXT | NOT NULL | 제목 |
+| content | TEXT | | 내용 (HTML 포함) |
+| view_count | INTEGER | DEFAULT 0 | 조회수 |
+| author | VARCHAR(100) | | 작성자 |
+| department | VARCHAR(100) | | 부서명 |
+| created_at | TIMESTAMP | | 등록일시 |
+| collected_at | TIMESTAMP | DEFAULT NOW() | 수집일시 |
+
+### 2.6 RestaurantInfo (음식점 정보)
+강남구 음식점 인허가 정보를 저장합니다.
+
+| 컬럼명 | 데이터 타입 | 제약조건 | 설명 |
+|--------|-------------|----------|------|
+| id | SERIAL | PRIMARY KEY | 음식점 정보 고유 ID |
+| location_id | INTEGER | FOREIGN KEY, NOT NULL | 지역 참조 |
+| management_number | VARCHAR(50) | UNIQUE | 관리번호 |
+| business_type | VARCHAR(20) | | 업종 (일반음식점, 제과점, 휴게음식점) |
+| license_date | DATE | | 인허가일자 |
+| business_status_code | VARCHAR(10) | | 영업상태코드 |
+| business_status_name | VARCHAR(50) | | 영업상태명 |
+| business_name | VARCHAR(200) | | 사업장명 |
+| phone_number | VARCHAR(20) | | 전화번호 |
+| area_size | DECIMAL(10,2) | | 소재지면적 |
+| postal_code | VARCHAR(10) | | 우편번호 |
+| road_address | TEXT | | 도로명주소 |
+| lot_address | TEXT | | 지번주소 |
+| coordinate_x | DECIMAL(15,10) | | X좌표 |
+| coordinate_y | DECIMAL(15,10) | | Y좌표 |
+| collected_at | TIMESTAMP | DEFAULT NOW() | 수집일시 |
 
 ## 3. Django Models.py 코드
 
@@ -113,7 +152,7 @@ class RawData(models.Model):
     ]
 
     location = models.ForeignKey(Location, on_delete=models.CASCADE, verbose_name="지역")
-    source_url = models.TextField(verbose_name="출처 URL")
+    source_url = models.TextField(blank=True, verbose_name="출처 URL")
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, verbose_name="카테고리")
     title = models.TextField(blank=True, verbose_name="제목")
     content = models.TextField(verbose_name="내용")
@@ -159,6 +198,66 @@ class Briefing(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.date}"
+
+class DistrictAnnouncement(models.Model):
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, verbose_name="지역")
+    board_type = models.CharField(max_length=50, blank=True, verbose_name="게시판 종류")
+    post_number = models.CharField(max_length=20, blank=True, verbose_name="게시물 번호")
+    title = models.TextField(verbose_name="제목")
+    content = models.TextField(blank=True, verbose_name="내용")
+    view_count = models.IntegerField(default=0, verbose_name="조회수")
+    author = models.CharField(max_length=100, blank=True, verbose_name="작성자")
+    department = models.CharField(max_length=100, blank=True, verbose_name="부서명")
+    created_at = models.DateTimeField(null=True, blank=True, verbose_name="등록일시")
+    collected_at = models.DateTimeField(auto_now_add=True, verbose_name="수집일시")
+
+    class Meta:
+        db_table = 'district_announcements'
+        indexes = [
+            models.Index(fields=['location', 'created_at']),
+            models.Index(fields=['board_type']),
+        ]
+        verbose_name = "구청 공지사항"
+        verbose_name_plural = "구청 공지사항들"
+
+    def __str__(self):
+        return f"{self.location} - {self.title[:50]}"
+
+class RestaurantInfo(models.Model):
+    BUSINESS_TYPE_CHOICES = [
+        ('general', '일반음식점'),
+        ('bakery', '제과점'),
+        ('cafe', '휴게음식점'),
+    ]
+
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, verbose_name="지역")
+    management_number = models.CharField(max_length=50, unique=True, verbose_name="관리번호")
+    business_type = models.CharField(max_length=20, choices=BUSINESS_TYPE_CHOICES, verbose_name="업종")
+    license_date = models.DateField(null=True, blank=True, verbose_name="인허가일자")
+    business_status_code = models.CharField(max_length=10, blank=True, verbose_name="영업상태코드")
+    business_status_name = models.CharField(max_length=50, blank=True, verbose_name="영업상태명")
+    business_name = models.CharField(max_length=200, blank=True, verbose_name="사업장명")
+    phone_number = models.CharField(max_length=20, blank=True, verbose_name="전화번호")
+    area_size = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="소재지면적")
+    postal_code = models.CharField(max_length=10, blank=True, verbose_name="우편번호")
+    road_address = models.TextField(blank=True, verbose_name="도로명주소")
+    lot_address = models.TextField(blank=True, verbose_name="지번주소")
+    coordinate_x = models.DecimalField(max_digits=15, decimal_places=10, null=True, blank=True, verbose_name="X좌표")
+    coordinate_y = models.DecimalField(max_digits=15, decimal_places=10, null=True, blank=True, verbose_name="Y좌표")
+    collected_at = models.DateTimeField(auto_now_add=True, verbose_name="수집일시")
+
+    class Meta:
+        db_table = 'restaurant_info'
+        indexes = [
+            models.Index(fields=['location', 'business_type']),
+            models.Index(fields=['business_status_code']),
+            models.Index(fields=['license_date']),
+        ]
+        verbose_name = "음식점 정보"
+        verbose_name_plural = "음식점 정보들"
+
+    def __str__(self):
+        return f"{self.business_name} ({self.business_type})"
 ```
 
 ## 4. ERD (Entity-Relationship Diagram)

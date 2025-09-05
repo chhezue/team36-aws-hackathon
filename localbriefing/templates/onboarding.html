@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}LocalBriefing - 시작하기{% endblock %}
+
+{% block content %}
+<div class="header">
+    <div class="logo">🏠 LocalBriefing</div>
+    <div class="subtitle">우리 동네 소식을<br>매일 아침 받아보세요</div>
+</div>
+
+<div id="step1" class="onboarding-step">
+    <button class="btn btn-primary" onclick="nextStep()">📧 이메일로 시작하기</button>
+    <button class="btn btn-secondary">📱 카카오로 시작하기</button>
+</div>
+
+<div id="step2" class="onboarding-step" style="display: none;">
+    <div class="form-group">
+        <label class="form-label">📍 거주지 설정</label>
+        <select class="form-select" id="gu-select">
+            <option value="">구 선택</option>
+            <option value="gangnam">강남구</option>
+            <option value="seocho">서초구</option>
+            <option value="songpa">송파구</option>
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <select class="form-select" id="dong-select">
+            <option value="">동 선택</option>
+            <option value="yeoksam">역삼동</option>
+            <option value="nonhyeon">논현동</option>
+            <option value="daechi">대치동</option>
+        </select>
+    </div>
+    
+    <div class="subtitle" style="margin: 20px 0;">
+        💡 정확한 위치 설정으로<br>맞춤 소식을 받아보세요
+    </div>
+    
+    <button class="btn btn-primary" onclick="nextStep()">다음</button>
+</div>
+
+<div id="step3" class="onboarding-step" style="display: none;">
+    <h3>✅ 관심 카테고리 선택</h3>
+    
+    <div class="category-grid">
+        <div class="category-item selected" data-category="weather">
+            <span class="card-icon">☀️</span>
+            <span>날씨 정보</span>
+        </div>
+        <div class="category-item selected" data-category="district">
+            <span class="card-icon">📢</span>
+            <span>구청 공지사항</span>
+        </div>
+        <div class="category-item selected" data-category="community">
+            <span class="card-icon">💬</span>
+            <span>커뮤니티 이슈</span>
+        </div>
+        <div class="category-item" data-category="secondhand">
+            <span class="card-icon">🥕</span>
+            <span>중고거래</span>
+        </div>
+        <div class="category-item selected" data-category="restaurant">
+            <span class="card-icon">🍽️</span>
+            <span>맛집 정보</span>
+        </div>
+    </div>
+    
+    <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="selectAll()">모두 선택</button>
+        <button class="btn btn-primary" onclick="nextStep()">완료</button>
+    </div>
+</div>
+
+<div id="step4" class="onboarding-step" style="display: none;">
+    <div class="header">
+        <div style="font-size: 48px; margin-bottom: 20px;">🎉</div>
+        <h2>설정 완료!</h2>
+        <div class="subtitle">
+            내일 아침 7시에<br>
+            첫 브리핑을 보내드릴게요
+        </div>
+    </div>
+    
+    <button class="btn btn-primary" onclick="location.href='/briefing/'">
+        오늘 브리핑 미리보기
+    </button>
+</div>
+{% endblock %}

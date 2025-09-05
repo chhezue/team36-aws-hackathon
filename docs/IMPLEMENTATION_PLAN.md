@@ -61,13 +61,15 @@ briefings/
 ├── collectors/
 │   ├── __init__.py
 │   ├── base_collector.py
+│   ├── csv_collector.py
 │   ├── district_collector.py
 │   ├── community_collector.py
 │   └── weather_collector.py
 ```
 
 ### 2.3 핵심 수집기 구현
-- **구청/동사무소 공지사항**: BeautifulSoup 활용
+- **강남구 공지사항**: CSV 파일 임포트 및 파싱
+- **강남구 음식점 정보**: CSV 파일 임포트 (일반음식점, 제과점, 휴게음식점)
 - **네이버 카페 커뮤니티**: Selenium 활용 (로그인 필요시)
 - **당근마켓 중고거래**: requests + BeautifulSoup
 - **기상청 날씨 API**: 공공데이터 포털 API 연동

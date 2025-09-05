@@ -1,0 +1,261 @@
+/* LocalBriefing 스타일 */
+:root {
+    --primary: #4A90E2;
+    --secondary: #F5A623;
+    --success: #7ED321;
+    --warning: #F5A623;
+    --error: #D0021B;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --background: #FAFAFA;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Roboto', sans-serif;
+    background-color: var(--background);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background: white;
+    min-height: 100vh;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-size: 16px;
+    color: var(--text-secondary);
+}
+
+.btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+
+.btn-secondary {
+    background-color: white;
+    color: var(--text-primary);
+    border: 1px solid #ddd;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.form-select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.category-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.category-item.selected {
+    background-color: #e3f2fd;
+    border-color: var(--primary);
+}
+
+.briefing-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.card-icon {
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+.card-title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.card-content ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.card-content li {
+    padding: 5px 0;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.card-content li:before {
+    content: "• ";
+    color: var(--primary);
+    font-weight: bold;
+}
+
+.location-header {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: white;
+    border-radius: 12px;
+}
+
+.user-greeting {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.location-info {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.date-info {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.weather-card {
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    color: white;
+}
+
+.weather-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.weather-temp {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.weather-condition {
+    font-size: 18px;
+}
+
+.settings-section {
+    margin-bottom: 30px;
+}
+
+.settings-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.settings-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.toggle-switch {
+    position: relative;
+    width: 50px;
+    height: 24px;
+    background-color: #ccc;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.toggle-switch.active {
+    background-color: var(--primary);
+}
+
+.toggle-switch::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: white;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.3s;
+}
+
+.toggle-switch.active::after {
+    transform: translateX(26px);
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.nav-buttons .btn {
+    flex: 1;
+}

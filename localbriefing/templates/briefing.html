@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}LocalBriefing - 오늘의 브리핑{% endblock %}
+
+{% block content %}
+<div class="location-header">
+    <div class="user-greeting">👤 {{ user_name }}님</div>
+    <div class="location-info">📍 {{ location }}</div>
+    <div class="date-info">{{ date }}</div>
+</div>
+
+<div class="briefing-card weather-card">
+    <div class="card-header">
+        <span class="card-icon">☀️</span>
+        <span class="card-title">오늘의 날씨</span>
+    </div>
+    <div class="weather-main">
+        <div>
+            <div class="weather-condition">🌤️ {{ weather.condition }}</div>
+            <div class="weather-temp">최고 {{ weather.temp }}</div>
+        </div>
+    </div>
+    <div>미세먼지 {{ weather.dust }}</div>
+    <div style="margin-top: 10px;">{{ weather.description }}</div>
+</div>
+
+<div class="briefing-card">
+    <div class="card-header">
+        <span class="card-icon">📢</span>
+        <span class="card-title">구청 소식</span>
+    </div>
+    <div class="card-content">
+        <ul>
+            {% for news in district_news %}
+            <li>{{ news }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div class="briefing-card">
+    <div class="card-header">
+        <span class="card-icon">💬</span>
+        <span class="card-title">동네 이슈</span>
+    </div>
+    <div class="card-content">
+        <ul>
+            {% for issue in community_issues %}
+            <li>{{ issue }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div class="briefing-card">
+    <div class="card-header">
+        <span class="card-icon">🥕</span>
+        <span class="card-title">인기 중고거래</span>
+    </div>
+    <div class="card-content">
+        <ul>
+            {% for item in secondhand %}
+            <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div class="briefing-card">
+    <div class="card-header">
+        <span class="card-icon">🍽️</span>
+        <span class="card-title">새로운 맛집</span>
+    </div>
+    <div class="card-content">
+        <ul>
+            {% for restaurant in restaurants %}
+            <li>{{ restaurant }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div class="nav-buttons">
+    <button class="btn btn-secondary" onclick="history.back()">이전 브리핑 보기</button>
+    <button class="btn btn-primary" onclick="location.href='/settings/'">설정</button>
+</div>
+{% endblock %}

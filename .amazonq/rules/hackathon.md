@@ -87,10 +87,10 @@ The daily briefing will consist of the following categories, collected from the 
 | Category (Item) | Details | Data Source | Collection Method |
 | :--- | :--- | :--- | :--- |
 | **☀️ Today's Local Weather** | Max/Min temperature, precipitation probability, fine dust levels. | KMA Public Data Portal, AirKorea | **API Call** |
-| **📢 District/Community News** | Policy announcements, facility construction notices, local festivals, subsidy info. | Official websites for each `Gu` (District) and `Dong` (Community) | **Web Scraping** |
+| **📢 District/Community News** | Policy announcements, facility construction notices, local festivals, subsidy info. | 강남구청 공지사항 및 행사정보 CSV | **CSV Import** |
 | **💬 Community Hot Issues** | Summary of popular posts and discussions from local online communities. | Naver Cafes (e.g., Gangnam Mom) | **Web Scraping** |
 | **🥕 Popular Second-hand Items** | "Free sharing" items or popular listings from second-hand markets. | Karrot (Daangn) web version | **Web Scraping** |
-| **🍽️ New Local Stores** | Information and review summaries for newly opened restaurants and cafes. | Naver Maps 'Newly Opened' filter, local Instagram hashtags. | **Web Scraping** |
+| **🍽️ New Local Restaurants** | Information about general restaurants, bakeries, and cafes in Gangnam-gu. | 강남구 음식점 인허가정보 CSV (일반음식점, 제과점, 휴게음식점) | **CSV Import** |
 | **📰 Other Local News**| News related to the district from Instagram, Naver News, YouTube etc. | Social Media, News Portals | **Web Scraping** |
 
 **Important Considerations for Data Collection:**

@@ -38,23 +38,10 @@
             <div class="weather-display">
                 <div class="weather-main-temp">{{ weather.temp }}</div>
                 <div class="weather-condition">{{ weather.condition }}</div>
-
-                <div class="weather-dust">미세먼지 {{ weather.dust }}</div>
-                
-                {% if weather.hourly_forecast %}
-                <div class="hourly-forecast">
-                    <div class="forecast-title">시간별 예보</div>
-                    <div class="forecast-items">
-                        {% for forecast in weather.hourly_forecast %}
-                        <div class="forecast-item">
-                            <div class="forecast-time">{{ forecast.time }}</div>
-                            <div class="forecast-temp">{{ forecast.temp }}</div>
-                            <div class="forecast-condition">{{ forecast.condition }}</div>
-                        </div>
-                        {% endfor %}
-                    </div>
+                <div class="weather-dust">
+                    <i data-lucide="wind" style="width: 16px; height: 16px; margin-right: 4px;"></i>
+                    미세먼지 {{ weather.dust }}
                 </div>
-                {% endif %}
             </div>
         </div>
     </div>

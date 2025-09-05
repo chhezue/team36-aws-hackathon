@@ -43,7 +43,7 @@ export default function LocationSelector({ selectedGu, onSelect }: LocationSelec
         <select 
           value={selectedGu}
           onChange={(e) => onSelect(e.target.value)}
-          className="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary"
+          className="w-full p-4 glass border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-white/30 text-gray-900 backdrop-blur-16"
         >
           <option value="">구를 선택하세요</option>
           {districts.map(district => (

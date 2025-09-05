@@ -13,8 +13,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko" className="scroll-smooth">
-      <body className="min-h-screen bg-white text-gray-900 antialiased">
-        <div className="container mx-auto max-w-md px-4">
+      <body className="min-h-screen text-gray-900 antialiased">
+        <div className="container mx-auto max-w-md px-4 relative z-10">
           {children}
         </div>
       </body>

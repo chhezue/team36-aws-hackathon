@@ -4,7 +4,7 @@ interface SkeletonProps {
 
 export default function Skeleton({ className = '' }: SkeletonProps) {
   return (
-    <div className={`animate-pulse bg-gray-200 rounded ${className}`} />
+    <div className={`animate-pulse bg-white/20 rounded ${className}`} />
   )
 }
 
@@ -26,7 +26,7 @@ export function CardSkeleton() {
 
 export function WeatherSkeleton() {
   return (
-    <div className="card animate-pulse bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-100">
+    <div className="card animate-pulse glass-strong border-white/20">
       <div className="flex items-center gap-3 mb-4">
         <Skeleton className="w-8 h-8 rounded-full" />
         <Skeleton className="h-6 w-24" />
@@ -45,14 +45,14 @@ export function WeatherSkeleton() {
 
 export function NewsSkeleton() {
   return (
-    <div className="card animate-pulse">
+    <div className="card animate-pulse glass-strong border-white/20">
       <div className="flex items-center gap-3 mb-4">
         <Skeleton className="w-8 h-8 rounded-full" />
         <Skeleton className="h-6 w-32" />
       </div>
       <div className="space-y-3">
         {[1, 2, 3].map(i => (
-          <div key={i} className="p-4 bg-gray-50 rounded-xl">
+          <div key={i} className="p-4 glass rounded-xl border border-white/10">
             <Skeleton className="h-5 w-full mb-2" />
             <Skeleton className="h-4 w-24" />
           </div>

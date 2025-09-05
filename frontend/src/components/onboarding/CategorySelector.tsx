@@ -31,10 +31,10 @@ export default function CategorySelector({
           <div
             key={category.id}
             onClick={() => onToggle(category.id)}
-            className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
+            className={`p-4 rounded-xl border-2 cursor-pointer transition-all duration-300 ${
               isSelected
-                ? 'border-primary-500 bg-primary-50 shadow-md'
-                : 'border-gray-200 bg-white hover:bg-gray-50'
+                ? 'border-primary-400/50 glass-strong shadow-lg'
+                : 'border-white/20 glass hover:glass-strong'
             }`}
           >
             <div className="flex items-center gap-3">

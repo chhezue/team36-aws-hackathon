@@ -47,18 +47,18 @@ export default function OnboardingPage() {
           className="space-y-8"
         >
           <div className="text-center space-y-6">
-            <div className="w-20 h-20 mx-auto bg-primary-50 rounded-2xl flex items-center justify-center">
+            <div className="w-20 h-20 mx-auto glass rounded-2xl flex items-center justify-center animate-glass-appear">
               <FaMapMarkerAlt size={32} className="text-primary-500" />
             </div>
             <div>
-              <h1 className="text-h1 text-gray-900 mb-3">LocalBriefing</h1>
-              <p className="text-body text-gray-600">
+              <h1 className="text-h1 text-white mb-3 drop-shadow-lg">LocalBriefing</h1>
+              <p className="text-body text-white/80 drop-shadow">
                 우리 동네 소식을 매일 아침 받아보세요
               </p>
             </div>
           </div>
 
-          <div className="card">
+          <div className="card animate-glass-appear">
             <h2 className="text-h3 text-gray-900 mb-4">거주지 설정</h2>
             <p className="text-small text-gray-600 mb-6">
               정확한 위치 설정으로 맞춤 소식을 받아보세요
@@ -89,12 +89,12 @@ export default function OnboardingPage() {
           <StepIndicator currentStep={currentStep} totalSteps={3} />
           
           <div className="text-center space-y-6">
-            <div className="w-20 h-20 mx-auto bg-primary-50 rounded-2xl flex items-center justify-center">
+            <div className="w-20 h-20 mx-auto glass rounded-2xl flex items-center justify-center animate-glass-appear">
               <FaTh size={32} className="text-primary-500" />
             </div>
             <div>
-              <h2 className="text-h2 text-gray-900 mb-3">관심 분야 선택</h2>
-              <p className="text-body text-gray-600">
+              <h2 className="text-h2 text-white mb-3 drop-shadow-lg">관심 분야 선택</h2>
+              <p className="text-body text-white/80 drop-shadow">
                 원하는 정보만 골라보세요
               </p>
             </div>
@@ -121,12 +121,12 @@ export default function OnboardingPage() {
           className="text-center space-y-8"
         >
           <div className="space-y-6">
-            <div className="w-24 h-24 mx-auto bg-success/10 rounded-2xl flex items-center justify-center">
+            <div className="w-24 h-24 mx-auto glass rounded-2xl flex items-center justify-center animate-glass-appear">
               <FaCheck size={32} className="text-green-500" />
             </div>
             <div>
-              <h2 className="text-h1 text-gray-900 mb-3">설정 완료!</h2>
-              <p className="text-body text-gray-600">
+              <h2 className="text-h1 text-white mb-3 drop-shadow-lg">설정 완료!</h2>
+              <p className="text-body text-white/80 drop-shadow">
                 매일 아침 7시에 맞춤 브리핑을 받아보세요
               </p>
             </div>

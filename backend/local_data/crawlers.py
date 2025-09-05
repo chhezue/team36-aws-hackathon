@@ -28,11 +28,12 @@ class LocalIssueCrawler:
         """유튜브에서 7일 이내 해당 구 관련 영상 크롤링"""
         results = []
         queries = [
-            f"{district_name} 뉴스 오늘",
-            f"{district_name} 이슈 핫이슈",
-            f"{district_name} 사건 사고",
-            f"{district_name} 개발 공사",
-            f"{district_name} 맛집 신규"
+            f"{district_name}",
+            f"{district_name} 소식",
+            f"{district_name} 이슈",
+            f"{district_name} 생활",
+            f"{district_name} 동네",
+            f"{district_name} 지역"
         ]
         
         for query in queries:
@@ -74,11 +75,12 @@ class LocalIssueCrawler:
         """네이버 검색에서 해당 구 관련 최신 검색 결과 크롤링"""
         results = []
         queries = [
-            f"{district_name} 뉴스 오늘",
-            f"{district_name} 핫이슈 이슈",
-            f"{district_name} 사건 사고",
-            f"{district_name} 공사 공지",
-            f"{district_name} 맛집 오픈"
+            f"{district_name}",
+            f"{district_name} 소식",
+            f"{district_name} 이슈",
+            f"{district_name} 생활정보",
+            f"{district_name} 커뮤니티",
+            f"{district_name} 동네소식"
         ]
         
         for query in queries:
@@ -118,11 +120,12 @@ class LocalIssueCrawler:
         start_date = end_date - timedelta(days=7)
         
         queries = [
-            f"{district_name} 뉴스",
-            f"{district_name} 사건 사고",
-            f"{district_name} 공사 개발",
-            f"{district_name} 행사 축제",
-            f"{district_name} 맛집 오픈"
+            f"{district_name}",
+            f"{district_name} 소식",
+            f"{district_name} 이슈",
+            f"{district_name} 생활",
+            f"{district_name} 지역소식",
+            f"{district_name} 동네"
         ]
         
         for query in queries:

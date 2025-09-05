@@ -27,8 +27,11 @@ class CrawlScheduler:
             logging.info("=== 일일 크롤링 작업 시작 ===")
             start_time = datetime.now()
             
-            # Django 관리 명령어 실행
+            # 1. 동네 이슈 크롤링 및 감성 분석
             call_command('daily_crawl_and_analyze', limit=50)
+            
+            # 2. 음식점 데이터 크롤링
+            call_command('crawl_all_restaurants')
             
             end_time = datetime.now()
             duration = (end_time - start_time).total_seconds()

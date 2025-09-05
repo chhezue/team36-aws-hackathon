@@ -86,23 +86,23 @@ export default function SettingsPage() {
 
       {/* Location Card */}
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="card"
+        initial={{ opacity: 0, y: 30, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ delay: 0.1, duration: 0.6, ease: "easeOut" }}
+        className="card glass-strong border-white/20 animate-glass-appear"
       >
         <div className="flex items-center gap-4 mb-4">
-          <div className="w-10 h-10 bg-primary-50 rounded-lg flex items-center justify-center">
-            <FaMapMarkerAlt size={20} className="text-primary-500" />
+          <div className="w-10 h-10 glass rounded-lg flex items-center justify-center">
+            <FaMapMarkerAlt size={20} className="text-primary-400 drop-shadow" />
           </div>
           <div>
             <h3 className="text-h3 text-gray-900">거주지 설정</h3>
             <p className="text-small text-gray-600">정확한 위치로 맞춤 소식을 받아보세요</p>
           </div>
         </div>
-        <div className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
+        <div className="flex justify-between items-center p-4 glass rounded-xl border border-white/10">
           <div className="flex items-center gap-2">
-            <FaMapMarkerAlt className="text-primary-500" />
+            <FaMapMarkerAlt className="text-primary-400" />
             <span className="font-medium text-gray-900">{selectedDistrict}</span>
           </div>
           <button 
@@ -116,14 +116,14 @@ export default function SettingsPage() {
 
       {/* Categories Card */}
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="card"
+        initial={{ opacity: 0, y: 30, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ delay: 0.2, duration: 0.6, ease: "easeOut" }}
+        className="card glass-strong border-white/20 animate-glass-appear"
       >
         <div className="flex items-center gap-4 mb-4">
-          <div className="w-10 h-10 bg-primary-50 rounded-lg flex items-center justify-center">
-            <FaTh size={20} className="text-primary-500" />
+          <div className="w-10 h-10 glass rounded-lg flex items-center justify-center">
+            <FaTh size={20} className="text-primary-400 drop-shadow" />
           </div>
           <div>
             <h3 className="text-h3 text-gray-900">브리핑 카테고리</h3>
@@ -137,9 +137,9 @@ export default function SettingsPage() {
             { key: 'newRestaurants', name: '신규 개업 음식점', IconComponent: FaStar },
             { key: 'hotRestaurants', name: '핫플 음식점', IconComponent: FaUtensils }
           ].map(category => (
-            <div key={category.key} className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
+            <div key={category.key} className="flex justify-between items-center p-4 glass rounded-xl border border-white/10">
               <div className="flex items-center gap-3">
-                <category.IconComponent className="text-xl text-primary-500" />
+                <category.IconComponent className="text-xl text-primary-400" />
                 <span className="text-body font-medium text-gray-900">{category.name}</span>
               </div>
               <button
@@ -163,14 +163,14 @@ export default function SettingsPage() {
 
       {/* Notifications Card */}
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="card"
+        initial={{ opacity: 0, y: 30, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ delay: 0.3, duration: 0.6, ease: "easeOut" }}
+        className="card glass-strong border-white/20 animate-glass-appear"
       >
         <div className="flex items-center gap-4 mb-4">
-          <div className="w-10 h-10 bg-primary-50 rounded-lg flex items-center justify-center">
-            <FaBell size={20} className="text-primary-500" />
+          <div className="w-10 h-10 glass rounded-lg flex items-center justify-center">
+            <FaBell size={20} className="text-primary-400 drop-shadow" />
           </div>
           <div>
             <h3 className="text-h3 text-gray-900">알림 설정</h3>
@@ -178,7 +178,7 @@ export default function SettingsPage() {
           </div>
         </div>
         <div className="space-y-4">
-          <div className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
+          <div className="flex justify-between items-center p-4 glass rounded-xl border border-white/10">
             <div className="flex items-center gap-2">
               <FaBell className="text-gray-500" />
               <span className="text-body text-gray-900">브리핑 시간</span>
@@ -186,7 +186,7 @@ export default function SettingsPage() {
             <select 
               value={notificationTime}
               onChange={(e) => setNotificationTime(e.target.value)}
-              className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-small"
+              className="px-3 py-2 glass border border-white/20 rounded-lg text-small text-gray-900"
             >
               <option value="06:00">오전 6:00</option>
               <option value="07:00">오전 7:00</option>
@@ -195,7 +195,7 @@ export default function SettingsPage() {
               <option value="10:00">오전 10:00</option>
             </select>
           </div>
-          <div className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
+          <div className="flex justify-between items-center p-4 glass rounded-xl border border-white/10">
             <div className="flex items-center gap-2">
               <FaBell className="text-gray-500" />
               <span className="text-body text-gray-900">주말 알림</span>
@@ -224,7 +224,7 @@ export default function SettingsPage() {
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-2xl p-6 w-full max-w-sm"
+            className="glass-modal rounded-2xl p-6 w-full max-w-sm border border-white/20"
           >
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">거주지 변경</h3>

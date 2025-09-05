@@ -79,18 +79,23 @@ export default function BriefingPage() {
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [showSentimentModal, setShowSentimentModal] = useState(false)
   const [loading, setLoading] = useState(true)
-  const [selectedDistrict, setSelectedDistrict] = useState('강남구')
+  const [selectedDistrict, setSelectedDistrict] = useState('')
 
   useEffect(() => {
     // localStorage에서 선택한 구 가져오기
     const savedDistrict = localStorage.getItem('selectedDistrict')
-    if (savedDistrict) {
-      setSelectedDistrict(savedDistrict)
-    }
+    console.log('=== localStorage 확인 ===');
+    console.log('저장된 구:', savedDistrict);
+    const district = savedDistrict || '강남구'
+    console.log('최종 구 설정:', district);
+    setSelectedDistrict(district)
+    console.log('========================');
   }, [])
   
   useEffect(() => {
-    fetchBriefingData()
+    if (selectedDistrict) {
+      fetchBriefingData()
+    }
   }, [selectedDate, selectedDistrict])
 
   const fetchBriefingData = async () => {
@@ -102,6 +107,7 @@ export default function BriefingPage() {
       ])
       
       console.log('=== API 응답 디버깅 ===');
+      console.log('요청한 구:', selectedDistrict);
       console.log('브리핑 데이터:', briefingResponse)
       console.log('브리핑 성공:', briefingResponse.success)
       console.log('동네 이슈 개수:', briefingResponse?.categories?.local_issues?.items?.length || 0)
@@ -137,7 +143,7 @@ export default function BriefingPage() {
   }
 
   return (
-    <div className="min-h-screen py-6 space-y-6">
+    <div className="min-h-screen px-4 py-8 max-w-md mx-auto space-y-8">
       <Header 
         title="LocalBriefing"
         subtitle={`📍 ${selectedDistrict}\n${formatDate(selectedDate)}`}
@@ -178,12 +184,11 @@ export default function BriefingPage() {
         <NewsSkeleton />
       ) : (
         <NewsCard 
-          title={briefingData?.categories?.local_issues?.title || "동네 이슈"}
+          title="💬 동네 이슈"
           IconComponent={HiChat}
           items={briefingData?.categories?.local_issues?.items?.map(issue => ({
             title: issue.title,
             source: issue.source,
-            sentiment: 'cloudy',
             url: issue.url,
             viewCount: issue.view_count
           })) || []}
@@ -195,13 +200,13 @@ export default function BriefingPage() {
         <NewsSkeleton />
       ) : (
         <NewsCard 
-          title={briefingData?.categories?.new_restaurants?.title || "신규 개업 음식점"}
+          title="✨ 핫플 음식점"
           IconComponent={HiSparkles}
-          items={briefingData?.categories?.new_restaurants?.items?.map(restaurant => ({
+          items={briefingData?.categories?.popular_restaurants?.items?.map(restaurant => ({
             title: restaurant.name,
-            source: restaurant.type,
-            sentiment: 'cool',
-            address: restaurant.address
+            source: '핫플 맛집',
+            address: restaurant.address,
+            category: restaurant.type
           })) || []}
           delay={0.2}
         />
@@ -211,9 +216,14 @@ export default function BriefingPage() {
         <NewsSkeleton />
       ) : (
         <NewsCard 
-          title="핫플 음식점"
+          title="🆕 신규 개업 음식점"
           IconComponent={HiLocationMarker}
-          items={[]}
+          items={briefingData?.categories?.new_restaurants?.items?.map(restaurant => ({
+            title: restaurant.name,
+            source: restaurant.license_date,
+            address: restaurant.address,
+            category: restaurant.type
+          })) || []}
           delay={0.3}
         />
       )}

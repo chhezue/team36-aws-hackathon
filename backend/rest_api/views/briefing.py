@@ -61,13 +61,19 @@ def get_briefing(request):
             location=location
         ).order_by('-created_at')[:5]
         
-        # 신규 음식점 (최근 30일)
-        month_ago = today - timedelta(days=30)
+        # 신규 음식점 (서울시 API - 실제 인허가일자 기준)
         new_restaurants = RestaurantInfo.objects.filter(
             location=location,
-            license_date__gte=month_ago,
+            management_number__startswith='seoul_',
             business_status_name='영업'
         ).order_by('-license_date')[:5]
+        
+        # 핵플 음식점 (카카오 API - 인기 맛집)
+        hot_restaurants = RestaurantInfo.objects.filter(
+            location=location,
+            management_number__startswith='kakao_',
+            business_status_name='영업'
+        ).order_by('-collected_at')[:5]
         
         data = {
             'success': True,
@@ -105,6 +111,16 @@ def get_briefing(request):
                         'address': restaurant.road_address or restaurant.lot_address,
                         'license_date': restaurant.license_date.strftime('%m/%d') if restaurant.license_date else ''
                     } for restaurant in new_restaurants]
+                },
+                'hot_restaurants': {
+                    'title': '핵플 음식점',
+                    'emoji': '🔥',
+                    'items': [{
+                        'name': restaurant.business_name,
+                        'type': restaurant.get_business_type_display(),
+                        'address': restaurant.road_address or restaurant.lot_address,
+                        'phone': restaurant.phone_number
+                    } for restaurant in hot_restaurants]
                 }
             }
         }

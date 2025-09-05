@@ -102,6 +102,20 @@ AI 처리 전 수집된 원본 텍스트 데이터를 저장합니다.
 | coordinate_y | DECIMAL(15,10) | | Y좌표 |
 | collected_at | TIMESTAMP | DEFAULT NOW() | 수집일시 |
 
+### 2.7 LocalIssue (동네 이슈)
+유튜브, 네이버 등에서 수집한 동네 이슈 정보를 저장합니다.
+
+| 컬럼명 | 데이터 타입 | 제약조건 | 설명 |
+|--------|-------------|----------|------|
+| id | SERIAL | PRIMARY KEY | 동네 이슈 고유 ID |
+| location_id | INTEGER | FOREIGN KEY, NOT NULL | 지역 참조 |
+| source | VARCHAR(20) | NOT NULL | 출처 (youtube, naver_search, naver_news) |
+| title | TEXT | NOT NULL | 제목 |
+| url | VARCHAR(200) | NOT NULL | URL |
+| view_count | INTEGER | DEFAULT 0 | 조회수 |
+| published_at | TIMESTAMP | | 게시일시 |
+| collected_at | TIMESTAMP | DEFAULT NOW() | 수집일시 |
+
 ## 3. Django Models.py 코드
 
 ```python
@@ -253,6 +267,33 @@ class RestaurantInfo(models.Model):
 
     def __str__(self):
         return f"{self.business_name} ({self.business_type})"
+
+class LocalIssue(models.Model):
+    SOURCE_CHOICES = [
+        ('youtube', '유튜브'),
+        ('naver_search', '네이버 검색'),
+        ('naver_news', '네이버 뉴스'),
+    ]
+    
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, verbose_name="지역")
+    source = models.CharField(max_length=20, choices=SOURCE_CHOICES, verbose_name="출처")
+    title = models.TextField(verbose_name="제목")
+    url = models.URLField(verbose_name="URL")
+    view_count = models.IntegerField(default=0, verbose_name="조회수")
+    published_at = models.DateTimeField(null=True, blank=True, verbose_name="게시일시")
+    collected_at = models.DateTimeField(auto_now_add=True, verbose_name="수집일시")
+    
+    class Meta:
+        db_table = 'local_issues'
+        indexes = [
+            models.Index(fields=['location', 'source', 'collected_at']),
+            models.Index(fields=['view_count']),
+        ]
+        verbose_name = "동네 이슈"
+        verbose_name_plural = "동네 이슈들"
+    
+    def __str__(self):
+        return f"{self.location} - {self.title[:50]}"
 ```
 
 ## 4. ERD (Entity-Relationship Diagram)

@@ -1,9 +1,14 @@
 #!/bin/bash
 
-echo "🚀 LocalBriefing 시작..."
+# LocalBriefing 서버 시작 스크립트
 
-# 프로젝트 디렉토리로 이동
-cd "$(dirname "$0")"
+echo "🚀 LocalBriefing 서버를 시작합니다..."
 
-# Python 실행
-python3 run.py
+# 가상환경 활성화
+source venv/bin/activate
+
+# Django 서버 시작
+cd localbriefing
+python manage.py runserver
+
+echo "✅ 서버가 http://127.0.0.1:8000 에서 실행 중입니다"

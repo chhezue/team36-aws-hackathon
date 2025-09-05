@@ -158,10 +158,21 @@ def briefing_view(request):
         published_at__gte=seven_days_ago
     ).order_by('-collected_at')[:5]
     
+    # 현재 날짜 정보
+    today = date.today()
+    weekdays = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일']
+    weekday = weekdays[today.weekday()]
+    formatted_date = f"{today.year}년 {today.month}월 {today.day}일 {weekday}"
+    
+    # 사용자 정보 (로그인된 경우 실제 정보 사용)
+    user_name = '사용자'
+    if request.user.is_authenticated:
+        user_name = request.user.first_name or request.user.username
+    
     briefing_data = {
-        'user_name': '김철수',
+        'user_name': user_name,
         'location': '강남구 역삼동',
-        'date': '2024년 3월 15일 금요일',
+        'date': formatted_date,
         'weather': {
             'condition': '맑음',
             'temp': '18°C',
@@ -190,3 +201,6 @@ def briefing_view(request):
     
     logger.info("브리핑 데이터 준비 완료")
     return render(request, 'briefing.html', briefing_data)
+
+def theme_selector(request):
+    return render(request, 'theme-selector.html')

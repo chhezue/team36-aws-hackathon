@@ -1,0 +1,36 @@
+/* B안: 자연스럽고 차분한 스타일 - 딜 그린 & 베이지 */
+:root {
+    /* Primary Colors */
+    --primary: #6A7954;
+    --primary-dark: #556147;
+    --secondary: #8FA876;
+    --success: #7A8B5C;
+    --warning: #B8A082;
+    --error: #A67C52;
+    
+    /* Text Colors */
+    --text-primary: #2F3B1F;
+    --text-secondary: #5A6B47;
+    --text-tertiary: #9CAA89;
+    --text-white: #FFFFFF;
+    
+    /* Background Colors */
+    --bg-primary: #F5F3F0;
+    --bg-secondary: #EAE0D5;
+    --bg-tertiary: #F0EDE8;
+    --bg-card: #EAE0D5;
+    
+    /* Natural Accents */
+    --accent-sage: #B8C5A6;
+    --accent-earth: #D4C4B0;
+    
+    /* Soft Shadows */
+    --shadow-light: 0 2px 8px rgba(106, 121, 84, 0.08);
+    --shadow-medium: 0 6px 16px rgba(106, 121, 84, 0.12);
+    --shadow-heavy: 0 12px 24px rgba(106, 121, 84, 0.16);
+    
+    /* Organic Gradients */
+    --gradient-primary: linear-gradient(135deg, #6A7954 0%, #7A8B5C 100%);
+    --gradient-secondary: linear-gradient(135deg, #8FA876 0%, #B8C5A6 100%);
+    --gradient-natural: linear-gradient(135deg, #EAE0D5 0%, #F0EDE8 100%);
+}

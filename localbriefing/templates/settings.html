@@ -3,228 +3,716 @@
 {% block title %}LocalBriefing - 설정{% endblock %}
 
 {% block content %}
+<!-- Header with Natural Design -->
 <div class="settings-header">
-    <div class="settings-logo">⚙️ 설정</div>
-    <div class="settings-subtitle">내 브리핑을 맞춤 설정하세요</div>
+    <button class="back-button" onclick="location.href='/briefing/'">
+        <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+    </button>
+    <div class="header-content">
+        <h1 class="page-title">설정</h1>
+        <p class="page-subtitle">내 브리핑을 맞춤 설정하세요</p>
+    </div>
 </div>
 
 <form id="settingsForm" method="post">
     {% csrf_token %}
     
-    <div class="settings-bento">
-        <!-- Account Section -->
-        <div class="settings-card account-card">
-            <div class="glass-card">
-                <div class="card-header-minimal">
-                    <span class="clay-icon">👤</span>
-                    <span class="card-title-bold">계정 정보</span>
-                </div>
-                <div class="account-info">
-                    <div class="info-item">
-                        <span class="info-label">이메일</span>
-                        <span class="info-value">{{ user_email|default:'user@example.com' }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">가입일</span>
-                        <span class="info-value">2024.03.01</span>
-                    </div>
-                    <button type="button" class="clay-btn secondary small">비밀번호 변경</button>
-                </div>
+    <!-- Profile Card -->
+    <div class="settings-card profile-card">
+        <div class="card-header">
+            <div class="profile-avatar">
+                <i data-lucide="user" style="width: 24px; height: 24px; color: var(--primary);"></i>
+            </div>
+            <div class="profile-info">
+                <h3 class="profile-name">{{ user_email|default:'사용자' }}</h3>
+                <p class="profile-subtitle">LocalBriefing 회원</p>
             </div>
         </div>
-
-        <!-- Location Section -->
-        <div class="settings-card location-card">
-            <div class="glass-card">
-                <div class="card-header-minimal">
-                    <span class="clay-icon">📍</span>
-                    <span class="card-title-bold">거주지</span>
-                </div>
-                <div class="location-display">
-                    <div class="current-location">
-                        <span class="location-text">{{ district|default:'강남구' }}</span>
-                    </div>
-                    <button type="button" class="clay-btn primary small" onclick="openLocationModal()">변경</button>
-                </div>
+        
+        <div class="profile-details">
+            <div class="detail-item">
+                <i data-lucide="mail" style="width: 16px; height: 16px;"></i>
+                <span>{{ user_email|default:'user@example.com' }}</span>
             </div>
-        </div>
-
-        <!-- Categories Section -->
-        <div class="settings-card categories-card">
-            <div class="glass-card">
-                <div class="card-header-minimal">
-                    <span class="clay-icon">📋</span>
-                    <span class="card-title-bold">브리핑 카테고리</span>
-                </div>
-                <div class="categories-grid">
-                    <div class="category-toggle">
-                        <div class="toggle-info">
-                            <span class="toggle-icon">☀️</span>
-                            <span class="toggle-label">날씨 정보</span>
-                        </div>
-                        <div class="toggle-switch {% if categories.weather %}active{% endif %}" onclick="toggleSwitch(this)" data-name="weather"></div>
-                    </div>
-
-                    <div class="category-toggle">
-                        <div class="toggle-info">
-                            <span class="toggle-icon">💬</span>
-                            <span class="toggle-label">동네 이슈</span>
-                        </div>
-                        <div class="toggle-switch {% if categories.community %}active{% endif %}" onclick="toggleSwitch(this)" data-name="community"></div>
-                    </div>
-                    <div class="category-toggle">
-                        <div class="toggle-info">
-                            <span class="toggle-icon">🍽️</span>
-                            <span class="toggle-label">맛집 정보</span>
-                        </div>
-                        <div class="toggle-switch {% if categories.restaurants %}active{% endif %}" onclick="toggleSwitch(this)" data-name="restaurants"></div>
-                    </div>
-                    <div class="category-toggle">
-                        <div class="toggle-info">
-                            <span class="toggle-icon">🆕</span>
-                            <span class="toggle-label">신장 개업 음식점</span>
-                        </div>
-                        <div class="toggle-switch {% if categories.new_restaurants %}active{% endif %}" onclick="toggleSwitch(this)" data-name="new_restaurants"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Notifications Section -->
-        <div class="settings-card notifications-card">
-            <div class="glass-card">
-                <div class="card-header-minimal">
-                    <span class="clay-icon">🔔</span>
-                    <span class="card-title-bold">알림 설정</span>
-                </div>
-                <div class="notification-settings">
-                    <div class="time-selector">
-                        <span class="setting-label">브리핑 시간</span>
-                        <select name="notification_time" class="form-select modern compact">
-                            <option value="06:00" {% if notification_time == '06:00' %}selected{% endif %}>오전 6:00</option>
-                            <option value="07:00" {% if notification_time == '07:00' or not notification_time %}selected{% endif %}>오전 7:00</option>
-                            <option value="08:00" {% if notification_time == '08:00' %}selected{% endif %}>오전 8:00</option>
-                            <option value="09:00" {% if notification_time == '09:00' %}selected{% endif %}>오전 9:00</option>
-                            <option value="10:00" {% if notification_time == '10:00' %}selected{% endif %}>오전 10:00</option>
-                        </select>
-                    </div>
-                    <div class="category-toggle">
-                        <div class="toggle-info">
-                            <span class="toggle-icon">🎅</span>
-                            <span class="toggle-label">주말 알림</span>
-                        </div>
-                        <div class="toggle-switch {% if weekend_notifications %}active{% endif %}" onclick="toggleSwitch(this)" data-name="weekend_notifications"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Other Settings -->
-        <div class="settings-card other-card">
-            <div class="glass-card">
-                <div class="card-header-minimal">
-                    <span class="clay-icon">ℹ️</span>
-                    <span class="card-title-bold">기타</span>
-                </div>
-                <div class="other-options">
-                    <div class="option-item">
-                        <span class="option-text">이용약관</span>
-                        <span class="option-arrow">›</span>
-                    </div>
-                    <div class="option-item">
-                        <span class="option-text">개인정보처리방침</span>
-                        <span class="option-arrow">›</span>
-                    </div>
-                    <div class="option-item">
-                        <span class="option-text">문의하기</span>
-                        <span class="option-arrow">›</span>
-                    </div>
-                    <div class="option-item logout">
-                        <span class="option-text">로그아웃</span>
-                        <span class="option-arrow">›</span>
-                    </div>
-                </div>
+            <div class="detail-item">
+                <i data-lucide="calendar" style="width: 16px; height: 16px;"></i>
+                <span>가입일: 2024.03.01</span>
             </div>
         </div>
     </div>
 
-    <div class="settings-actions">
-        <button type="submit" class="clay-btn primary large">
-            <span class="btn-icon">💾</span>
+    <!-- Location Card -->
+    <div class="settings-card location-card">
+        <div class="card-header">
+            <div class="section-icon">
+                <i data-lucide="map-pin" style="width: 20px; height: 20px; color: var(--primary);"></i>
+            </div>
+            <div>
+                <h3 class="section-title">거주지 설정</h3>
+                <p class="section-subtitle">정확한 위치로 맞춤 소식을 받아보세요</p>
+            </div>
+        </div>
+        
+        <div class="location-display">
+            <div class="current-location">
+                <i data-lucide="home" style="width: 18px; height: 18px; color: var(--secondary);"></i>
+                <span class="location-text">{{ district|default:'강남구' }}</span>
+            </div>
+            <button type="button" class="change-btn" onclick="openLocationModal()">
+                <i data-lucide="edit-2" style="width: 14px; height: 14px;"></i>
+                <span>변경</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Categories Card -->
+    <div class="settings-card categories-card">
+        <div class="card-header">
+            <div class="section-icon">
+                <i data-lucide="grid-3x3" style="width: 20px; height: 20px; color: var(--primary);"></i>
+            </div>
+            <div>
+                <h3 class="section-title">브리핑 카테고리</h3>
+                <p class="section-subtitle">받고 싶은 정보를 선택하세요</p>
+            </div>
+        </div>
+        
+        <div class="categories-grid">
+            <div class="category-toggle">
+                <div class="category-info">
+                    <div class="category-icon weather">
+                        <i data-lucide="sun" style="width: 18px; height: 18px;"></i>
+                    </div>
+                    <span class="category-label">날씨 정보</span>
+                </div>
+                <div class="toggle-switch {% if categories.weather %}active{% endif %}" onclick="toggleSwitch(this)" data-name="weather"></div>
+            </div>
+
+            <div class="category-toggle">
+                <div class="category-info">
+                    <div class="category-icon community">
+                        <i data-lucide="message-square" style="width: 18px; height: 18px;"></i>
+                    </div>
+                    <span class="category-label">동네 이슈</span>
+                </div>
+                <div class="toggle-switch {% if categories.community %}active{% endif %}" onclick="toggleSwitch(this)" data-name="community"></div>
+            </div>
+            
+            <div class="category-toggle">
+                <div class="category-info">
+                    <div class="category-icon restaurants">
+                        <i data-lucide="utensils" style="width: 18px; height: 18px;"></i>
+                    </div>
+                    <span class="category-label">맛집 정보</span>
+                </div>
+                <div class="toggle-switch {% if categories.restaurants %}active{% endif %}" onclick="toggleSwitch(this)" data-name="restaurants"></div>
+            </div>
+            
+            <div class="category-toggle">
+                <div class="category-info">
+                    <div class="category-icon new-restaurants">
+                        <i data-lucide="plus-circle" style="width: 18px; height: 18px;"></i>
+                    </div>
+                    <span class="category-label">신규 개업</span>
+                </div>
+                <div class="toggle-switch {% if categories.new_restaurants %}active{% endif %}" onclick="toggleSwitch(this)" data-name="new_restaurants"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications Card -->
+    <div class="settings-card notifications-card">
+        <div class="card-header">
+            <div class="section-icon">
+                <i data-lucide="bell" style="width: 20px; height: 20px; color: var(--primary);"></i>
+            </div>
+            <div>
+                <h3 class="section-title">알림 설정</h3>
+                <p class="section-subtitle">브리핑 알림을 관리하세요</p>
+            </div>
+        </div>
+        
+        <div class="notification-settings">
+            <div class="notification-item">
+                <div class="notification-info">
+                    <i data-lucide="clock" style="width: 16px; height: 16px; color: var(--text-secondary);"></i>
+                    <span>브리핑 시간</span>
+                </div>
+                <select name="notification_time" class="time-select">
+                    <option value="06:00" {% if notification_time == '06:00' %}selected{% endif %}>오전 6:00</option>
+                    <option value="07:00" {% if notification_time == '07:00' or not notification_time %}selected{% endif %}>오전 7:00</option>
+                    <option value="08:00" {% if notification_time == '08:00' %}selected{% endif %}>오전 8:00</option>
+                    <option value="09:00" {% if notification_time == '09:00' %}selected{% endif %}>오전 9:00</option>
+                    <option value="10:00" {% if notification_time == '10:00' %}selected{% endif %}>오전 10:00</option>
+                </select>
+            </div>
+            
+            <div class="notification-item">
+                <div class="notification-info">
+                    <i data-lucide="calendar-days" style="width: 16px; height: 16px; color: var(--success);"></i>
+                    <span>주말 알림</span>
+                </div>
+                <div class="toggle-switch {% if weekend_notifications %}active{% endif %}" onclick="toggleSwitch(this)" data-name="weekend_notifications"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Other Settings Card -->
+    <div class="settings-card other-card">
+        <div class="card-header">
+            <div class="section-icon">
+                <i data-lucide="more-horizontal" style="width: 20px; height: 20px; color: var(--primary);"></i>
+            </div>
+            <div>
+                <h3 class="section-title">기타</h3>
+                <p class="section-subtitle">앱 정보 및 지원</p>
+            </div>
+        </div>
+        
+        <div class="other-options">
+            <div class="option-item">
+                <div class="option-info">
+                    <i data-lucide="file-text" style="width: 16px; height: 16px;"></i>
+                    <span>이용약관</span>
+                </div>
+                <i data-lucide="chevron-right" style="width: 16px; height: 16px;"></i>
+            </div>
+            
+            <div class="option-item">
+                <div class="option-info">
+                    <i data-lucide="shield" style="width: 16px; height: 16px;"></i>
+                    <span>개인정보처리방침</span>
+                </div>
+                <i data-lucide="chevron-right" style="width: 16px; height: 16px;"></i>
+            </div>
+            
+            <div class="option-item">
+                <div class="option-info">
+                    <i data-lucide="help-circle" style="width: 16px; height: 16px;"></i>
+                    <span>문의하기</span>
+                </div>
+                <i data-lucide="chevron-right" style="width: 16px; height: 16px;"></i>
+            </div>
+            
+            <div class="option-item logout-item">
+                <div class="option-info">
+                    <i data-lucide="log-out" style="width: 16px; height: 16px; color: var(--error);"></i>
+                    <span style="color: var(--error);">로그아웃</span>
+                </div>
+                <i data-lucide="chevron-right" style="width: 16px; height: 16px;"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+        <button type="submit" class="save-button">
+            <i data-lucide="check" style="width: 18px; height: 18px;"></i>
             <span>설정 저장</span>
-        </button>
-        <button type="button" class="clay-btn secondary large" onclick="location.href='/briefing/'">
-            <span class="btn-icon">←</span>
-            <span>브리핑으로</span>
         </button>
     </div>
 </form>
 
-<!-- 위치 변경 모달 -->
+<!-- Location Modal -->
 <div id="locationModal" class="modal" style="display: none;">
     <div class="modal-content">
         <div class="modal-header">
-            <h3>📍 거주지 변경</h3>
-            <span class="close" onclick="closeLocationModal()">&times;</span>
+            <h3>
+                <i data-lucide="map-pin" style="width: 20px; height: 20px; margin-right: 8px;"></i>
+                거주지 변경
+            </h3>
+            <button class="modal-close" onclick="closeLocationModal()">
+                <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+            </button>
         </div>
         <div class="modal-body">
             <div class="form-group">
-                <label>구 선택</label>
-                <select id="districtSelect">
+                <label class="form-label">구 선택</label>
+                <select id="districtSelect" class="form-select">
                     <option value="">구를 선택하세요</option>
+                    <option value="강남구">강남구</option>
+                    <option value="강동구">강동구</option>
+                    <option value="강북구">강북구</option>
+                    <option value="강서구">강서구</option>
+                    <option value="관악구">관악구</option>
+                    <option value="광진구">광진구</option>
+                    <option value="구로구">구로구</option>
+                    <option value="금천구">금천구</option>
+                    <option value="노원구">노원구</option>
+                    <option value="도봉구">도봉구</option>
+                    <option value="동대문구">동대문구</option>
+                    <option value="동작구">동작구</option>
+                    <option value="마포구">마포구</option>
+                    <option value="서대문구">서대문구</option>
+                    <option value="서초구">서초구</option>
+                    <option value="성동구">성동구</option>
+                    <option value="성북구">성북구</option>
+                    <option value="송파구">송파구</option>
+                    <option value="양천구">양천구</option>
+                    <option value="영등포구">영등포구</option>
+                    <option value="용산구">용산구</option>
+                    <option value="은평구">은평구</option>
+                    <option value="종로구">종로구</option>
+                    <option value="중구">중구</option>
+                    <option value="중랑구">중랑구</option>
                 </select>
             </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" onclick="closeLocationModal()">취소</button>
-            <button type="button" class="btn btn-primary" onclick="saveLocation()">저장</button>
+            <button type="button" class="modal-btn secondary" onclick="closeLocationModal()">취소</button>
+            <button type="button" class="modal-btn primary" onclick="saveLocation()">저장</button>
         </div>
     </div>
 </div>
 
-<script>
-// 토글 스위치 기능
-function toggleSwitch(element) {
-    element.classList.toggle('active');
+<style>
+/* Settings Page Styles */
+.settings-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 0 32px 0;
+    margin-bottom: 24px;
 }
 
-// 위치 변경 모달
+.back-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: var(--bg-card);
+    border: 1px solid rgba(106, 121, 84, 0.15);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.back-button:hover {
+    background: var(--bg-tertiary);
+    transform: translateY(-1px);
+}
+
+.header-content {
+    flex: 1;
+}
+
+.page-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 4px 0;
+    letter-spacing: -0.02em;
+}
+
+.page-subtitle {
+    font-size: 16px;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/* Settings Cards */
+.settings-card {
+    background: var(--bg-card);
+    border: 1px solid rgba(106, 121, 84, 0.1);
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-light);
+    transition: all 0.2s ease;
+}
+
+.settings-card:hover {
+    box-shadow: var(--shadow-medium);
+    transform: translateY(-1px);
+}
+
+.card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.section-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--bg-tertiary);
+    border: 2px solid var(--primary);
+    border-radius: 12px;
+    flex-shrink: 0;
+}
+
+.section-icon i {
+    color: var(--primary) !important;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 4px 0;
+}
+
+.section-subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/* Profile Card */
+.profile-card .card-header {
+    margin-bottom: 16px;
+}
+
+.profile-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: var(--bg-tertiary);
+    border: 2px solid var(--primary);
+    border-radius: 16px;
+}
+
+.profile-avatar i {
+    color: var(--primary) !important;
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-name {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 4px 0;
+}
+
+.profile-subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.profile-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.detail-item i {
+    color: var(--text-tertiary) !important;
+}
+
+/* Location Card */
+.location-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background: var(--bg-tertiary);
+    border-radius: 16px;
+}
+
+.current-location {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.location-text {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.change-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.change-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+/* Categories Grid */
+.categories-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.category-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background: var(--bg-tertiary);
+    border-radius: 16px;
+    transition: all 0.2s ease;
+}
+
+.category-toggle:hover {
+    background: var(--bg-secondary);
+}
+
+.category-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.category-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+}
+
+.category-icon.weather { background: rgba(255, 149, 0, 0.1); }
+.category-icon.weather i { color: #FF9500 !important; }
+
+.category-icon.community { background: rgba(106, 121, 84, 0.1); }
+.category-icon.community i { color: var(--primary) !important; }
+
+.category-icon.restaurants { background: rgba(143, 168, 118, 0.1); }
+.category-icon.restaurants i { color: var(--secondary) !important; }
+
+.category-icon.new-restaurants { background: rgba(122, 139, 92, 0.1); }
+.category-icon.new-restaurants i { color: var(--success) !important; }
+
+.category-label {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+/* Notifications */
+.notification-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.notification-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background: var(--bg-tertiary);
+    border-radius: 16px;
+}
+
+.notification-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.time-select {
+    padding: 8px 12px;
+    background: var(--bg-secondary);
+    border: 1px solid rgba(106, 121, 84, 0.15);
+    border-radius: 12px;
+    font-size: 14px;
+    color: var(--text-primary);
+}
+
+/* Other Options */
+.other-options {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.option-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.option-item:hover {
+    background: var(--bg-tertiary);
+}
+
+.option-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.option-info i {
+    color: var(--text-secondary) !important;
+}
+
+.logout-item .option-info i {
+    color: var(--error) !important;
+}
+
+/* Action Buttons */
+.action-buttons {
+    margin-top: 32px;
+}
+
+.save-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    padding: 18px 24px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(106, 121, 84, 0.3);
+}
+
+.save-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(106, 121, 84, 0.4);
+}
+
+/* Modal Styles */
+.modal-content {
+    background: var(--bg-card);
+    border: 1px solid rgba(106, 121, 84, 0.1);
+    border-radius: 24px;
+    overflow: hidden;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px;
+    border-bottom: 1px solid rgba(106, 121, 84, 0.1);
+}
+
+.modal-header h3 {
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.modal-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: var(--bg-tertiary);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    background: var(--bg-secondary);
+}
+
+.modal-body {
+    padding: 24px;
+}
+
+.modal-footer {
+    display: flex;
+    gap: 12px;
+    padding: 24px;
+    border-top: 1px solid rgba(106, 121, 84, 0.1);
+}
+
+.modal-btn {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modal-btn.primary {
+    background: var(--primary);
+    color: white;
+}
+
+.modal-btn.secondary {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+</style>
+
+<script>
+function toggleSwitch(element) {
+    element.classList.toggle('active');
+    if (navigator.vibrate) {
+        navigator.vibrate(50);
+    }
+}
+
 function openLocationModal() {
-    document.getElementById('locationModal').style.display = 'block';
-    loadDistricts();
+    document.getElementById('locationModal').style.display = 'flex';
 }
 
 function closeLocationModal() {
     document.getElementById('locationModal').style.display = 'none';
 }
 
-// 구 목록 로드
-function loadDistricts() {
-    fetch('/api/districts/')
-        .then(response => response.json())
-        .then(data => {
-            const select = document.getElementById('districtSelect');
-            select.innerHTML = '<option value="">구를 선택하세요</option>';
-            data.districts.forEach(district => {
-                select.innerHTML += `<option value="${district}">${district}</option>`;
-            });
-        });
-}
-
-
-
-// 위치 저장
 function saveLocation() {
     const district = document.getElementById('districtSelect').value;
-    
     if (!district) {
         alert('구를 선택해주세요.');
         return;
     }
     
-    // 폼에 숨겨진 필드 추가
     const form = document.getElementById('settingsForm');
-    
     let districtInput = document.querySelector('input[name="district"]');
     if (!districtInput) {
         districtInput = document.createElement('input');
@@ -235,18 +723,13 @@ function saveLocation() {
     districtInput.value = district;
     
     closeLocationModal();
-    
-    // 화면에 즉시 반영
     document.querySelector('.location-text').textContent = district;
 }
 
-// 폼 제출 시 토글 상태 처리
 document.getElementById('settingsForm').addEventListener('submit', function(e) {
-    // 기존 숨겨진 입력 필드 제거
     const existingInputs = this.querySelectorAll('input[type="hidden"][data-toggle]');
     existingInputs.forEach(input => input.remove());
     
-    // 토글 스위치 상태를 숨겨진 입력 필드로 추가
     const toggles = document.querySelectorAll('.toggle-switch[data-name]');
     toggles.forEach(toggle => {
         const input = document.createElement('input');
@@ -256,6 +739,12 @@ document.getElementById('settingsForm').addEventListener('submit', function(e) {
         input.setAttribute('data-toggle', 'true');
         this.appendChild(input);
     });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
 });
 </script>
 {% endblock %}

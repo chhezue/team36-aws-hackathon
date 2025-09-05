@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react'
 import { HiSun, HiChat, HiLocationMarker, HiSparkles } from 'react-icons/hi'
 import Header from '@/components/layout/Header'
-import WeatherCard from '@/components/briefing/WeatherCard'
+import RealWeatherCard from '@/components/briefing/RealWeatherCard'
+import SentimentCard from '@/components/briefing/SentimentCard'
 import NewsCard from '@/components/briefing/NewsCard'
 import SentimentModal from '@/components/briefing/SentimentModal'
 import Button from '@/components/ui/Button'
@@ -11,43 +12,115 @@ import { WeatherSkeleton, NewsSkeleton } from '@/components/ui/Skeleton'
 import { api } from '@/lib/api'
 
 interface BriefingData {
-  weather: {
-    condition: string
+  success: boolean
+  district: string
+  date: string
+  sentiment: {
     temperature: number
-    dust: string
-    emoji: string
+    mood_emoji: string
+    description: string
+    positive_ratio: number
+    negative_ratio: number
   }
-  community: Array<{
-    title: string
-    source: string
-  }>
-  restaurants: Array<{
-    title: string
-    type: string
-  }>
-  newRestaurants: Array<{
-    title: string
-    location: string
-  }>
+  categories: {
+    local_issues: {
+      title: string
+      emoji: string
+      items: Array<{
+        title: string
+        source: string
+        url: string
+        view_count: number
+        collected_at: string
+      }>
+    }
+    announcements: {
+      title: string
+      emoji: string
+      items: Array<{
+        title: string
+        department: string
+        view_count: number
+        created_at: string
+      }>
+    }
+    new_restaurants: {
+      title: string
+      emoji: string
+      items: Array<{
+        name: string
+        type: string
+        address: string
+        license_date: string
+      }>
+    }
+  }
+}
+
+interface WeatherData {
+  success: boolean
+  district: string
+  weather: {
+    temp: string
+    condition: string
+    dust: string
+    description: string
+    hourly_forecast: Array<{
+      time: string
+      temp: string
+      condition: string
+    }>
+  }
 }
 
 export default function BriefingPage() {
   const [briefingData, setBriefingData] = useState<BriefingData | null>(null)
+  const [weatherData, setWeatherData] = useState<WeatherData | null>(null)
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [showSentimentModal, setShowSentimentModal] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [selectedDistrict, setSelectedDistrict] = useState('강남구')
 
   useEffect(() => {
+    // localStorage에서 선택한 구 가져오기
+    const savedDistrict = localStorage.getItem('selectedDistrict')
+    if (savedDistrict) {
+      setSelectedDistrict(savedDistrict)
+    }
+  }, [])
+  
+  useEffect(() => {
     fetchBriefingData()
-  }, [selectedDate])
+  }, [selectedDate, selectedDistrict])
 
   const fetchBriefingData = async () => {
     try {
       setLoading(true)
-      const data = await api.getBriefing('강남구')
-      setBriefingData(data)
+      const [briefingResponse, weatherResponse] = await Promise.all([
+        api.getBriefing(selectedDistrict),
+        api.getWeather(selectedDistrict)
+      ])
+      
+      console.log('=== API 응답 디버깅 ===');
+      console.log('브리핑 데이터:', briefingResponse)
+      console.log('브리핑 성공:', briefingResponse.success)
+      console.log('동네 이슈 개수:', briefingResponse?.categories?.local_issues?.items?.length || 0)
+      console.log('날씨 데이터:', weatherResponse)
+      console.log('========================')
+      
+      if (briefingResponse.success) {
+        setBriefingData(briefingResponse)
+      } else {
+        console.error('브리핑 데이터 오류:', briefingResponse.error)
+      }
+      
+      if (weatherResponse.success) {
+        setWeatherData(weatherResponse)
+      } else {
+        console.error('날씨 데이터 오류:', weatherResponse.error)
+      }
     } catch (error) {
-      console.error('브리핑 데이터 로드 실패:', error)
+      console.error('데이터 로드 실패:', error)
     } finally {
       setLoading(false)
     }
@@ -67,7 +140,7 @@ export default function BriefingPage() {
     <div className="min-h-screen py-6 space-y-6">
       <Header 
         title="LocalBriefing"
-        subtitle={`📍 강남구\n${formatDate(selectedDate)}`}
+        subtitle={`📍 ${selectedDistrict}\n${formatDate(selectedDate)}`}
         showSentiment
         showSettings
         onSentiment={() => setShowSentimentModal(true)}
@@ -76,25 +149,43 @@ export default function BriefingPage() {
 
       {loading ? (
         <WeatherSkeleton />
-      ) : (
-        <WeatherCard 
-          condition="맑음"
-          temperature={18}
-          dust="보통"
-          description={briefingData?.sentiment?.description || "오늘의 동네 분위기를 확인해보세요"}
+      ) : briefingData?.sentiment ? (
+        <SentimentCard 
+          temperature={briefingData.sentiment.temperature}
+          moodEmoji={briefingData.sentiment.mood_emoji}
+          description={briefingData.sentiment.description}
+          onClick={() => setShowSentimentModal(true)}
         />
+      ) : (
+        <WeatherSkeleton />
+      )}
+
+      {loading ? (
+        <WeatherSkeleton />
+      ) : weatherData?.weather ? (
+        <RealWeatherCard 
+          condition={weatherData.weather.condition}
+          temp={weatherData.weather.temp}
+          dust={weatherData.weather.dust}
+          description={weatherData.weather.description}
+          hourlyForecast={weatherData.weather.hourly_forecast}
+        />
+      ) : (
+        <WeatherSkeleton />
       )}
 
       {loading ? (
         <NewsSkeleton />
       ) : (
         <NewsCard 
-          title="동네 분위기"
+          title={briefingData?.categories?.local_issues?.title || "동네 이슈"}
           IconComponent={HiChat}
-          items={briefingData?.issues?.map(issue => ({
+          items={briefingData?.categories?.local_issues?.items?.map(issue => ({
             title: issue.title,
             source: issue.source,
-            sentiment: issue.sentiment_impact > 0 ? 'sunny' : issue.sentiment_impact < 0 ? 'stormy' : 'cloudy'
+            sentiment: 'cloudy',
+            url: issue.url,
+            viewCount: issue.view_count
           })) || []}
           delay={0.1}
         />
@@ -104,15 +195,14 @@ export default function BriefingPage() {
         <NewsSkeleton />
       ) : (
         <NewsCard 
-          title="맛집 온도"
-          IconComponent={HiLocationMarker}
-          items={briefingData?.issues?.filter(issue => issue.source.includes('맛집')).map(issue => ({
-            title: issue.title,
-            source: issue.source,
-            sentiment: 'warm'
-          })) || [
-            { title: "맛집 정보를 수집 중입니다", source: "시스템", sentiment: "warm" }
-          ]}
+          title={briefingData?.categories?.new_restaurants?.title || "신규 개업 음식점"}
+          IconComponent={HiSparkles}
+          items={briefingData?.categories?.new_restaurants?.items?.map(restaurant => ({
+            title: restaurant.name,
+            source: restaurant.type,
+            sentiment: 'cool',
+            address: restaurant.address
+          })) || []}
           delay={0.2}
         />
       )}
@@ -121,28 +211,24 @@ export default function BriefingPage() {
         <NewsSkeleton />
       ) : (
         <NewsCard 
-          title="신선한 맛집"
-          IconComponent={HiSparkles}
-          items={briefingData?.issues?.filter(issue => issue.source.includes('신규')).map(issue => ({
-            title: issue.title,
-            source: issue.source,
-            sentiment: 'cool'
-          })) || [
-            { title: "신규 맛집 정보를 수집 중입니다", source: "시스템", sentiment: "cool" }
-          ]}
+          title="핫플 음식점"
+          IconComponent={HiLocationMarker}
+          items={[]}
           delay={0.3}
         />
       )}
 
-      <SentimentModal 
-        isOpen={showSentimentModal}
-        onClose={() => setShowSentimentModal(false)}
-        sentiment={{
-          positiveRatio: briefingData?.sentiment?.temperature || 50,
-          negativeRatio: 100 - (briefingData?.sentiment?.temperature || 50),
-          moodEmoji: briefingData?.sentiment?.mood_emoji || "☀️"
-        }}
-      />
+      {briefingData?.sentiment && (
+        <SentimentModal 
+          isOpen={showSentimentModal}
+          onClose={() => setShowSentimentModal(false)}
+          sentiment={{
+            positiveRatio: briefingData.sentiment.positive_ratio,
+            negativeRatio: briefingData.sentiment.negative_ratio,
+            moodEmoji: briefingData.sentiment.mood_emoji
+          }}
+        />
+      )}
     </div>
   )
 }

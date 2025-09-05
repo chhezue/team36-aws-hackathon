@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { HiLocationMarker, HiViewGrid } from 'react-icons/hi'
+import { FaMapMarkerAlt, FaTh, FaCheck } from 'react-icons/fa'
 import { motion } from 'framer-motion'
 import Button from '@/components/ui/Button'
 import StepIndicator from '@/components/onboarding/StepIndicator'
@@ -16,8 +16,8 @@ export default function OnboardingPage() {
   const categories = [
     { id: 'weather', name: '날씨 정보' },
     { id: 'community', name: '동네 이슈' },
-    { id: 'restaurants', name: '맛집 정보' },
-    { id: 'new_restaurants', name: '신규 개업' }
+    { id: 'new_restaurants', name: '신규 개업 음식점' },
+    { id: 'hot_restaurants', name: '핫플 음식점' }
   ]
 
   const nextStep = () => {
@@ -48,7 +48,7 @@ export default function OnboardingPage() {
         >
           <div className="text-center space-y-6">
             <div className="w-20 h-20 mx-auto bg-primary-50 rounded-2xl flex items-center justify-center">
-              <HiLocationMarker size={32} className="text-primary-500" />
+              <FaMapMarkerAlt size={32} className="text-primary-500" />
             </div>
             <div>
               <h1 className="text-h1 text-gray-900 mb-3">LocalBriefing</h1>
@@ -90,7 +90,7 @@ export default function OnboardingPage() {
           
           <div className="text-center space-y-6">
             <div className="w-20 h-20 mx-auto bg-primary-50 rounded-2xl flex items-center justify-center">
-              <HiViewGrid size={32} className="text-primary-500" />
+              <FaTh size={32} className="text-primary-500" />
             </div>
             <div>
               <h2 className="text-h2 text-gray-900 mb-3">관심 분야 선택</h2>
@@ -122,7 +122,7 @@ export default function OnboardingPage() {
         >
           <div className="space-y-6">
             <div className="w-24 h-24 mx-auto bg-success/10 rounded-2xl flex items-center justify-center">
-              <span className="text-4xl">✅</span>
+              <FaCheck size={32} className="text-green-500" />
             </div>
             <div>
               <h2 className="text-h1 text-gray-900 mb-3">설정 완료!</h2>
@@ -133,7 +133,11 @@ export default function OnboardingPage() {
           </div>
 
           <div className="space-y-4">
-            <Button onClick={() => window.location.href = '/briefing'} className="w-full">
+            <Button onClick={() => {
+              localStorage.setItem('selectedDistrict', selectedGu)
+              localStorage.setItem('selectedCategories', JSON.stringify(selectedCategories))
+              window.location.href = '/briefing'
+            }} className="w-full">
               브리핑 보러가기
             </Button>
           </div>

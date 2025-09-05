@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { HiLocationMarker, HiViewGrid, HiBell, HiSun, HiChat, HiSparkles } from 'react-icons/hi'
+import { FaMapMarkerAlt, FaTh, FaBell, FaSun, FaComments, FaStar, FaUtensils } from 'react-icons/fa'
 import { motion } from 'framer-motion'
 import Header from '@/components/layout/Header'
 import Card from '@/components/ui/Card'
@@ -15,8 +15,8 @@ export default function SettingsPage() {
   const [categories, setCategories] = useState({
     weather: true,
     community: true,
-    restaurants: true,
-    newRestaurants: true
+    newRestaurants: true,
+    hotRestaurants: true
   })
   const [notificationTime, setNotificationTime] = useState('07:00')
   const [weekendNotifications, setWeekendNotifications] = useState(true)
@@ -93,7 +93,7 @@ export default function SettingsPage() {
       >
         <div className="flex items-center gap-4 mb-4">
           <div className="w-10 h-10 bg-primary-50 rounded-lg flex items-center justify-center">
-            <HiLocationMarker size={20} className="text-primary-500" />
+            <FaMapMarkerAlt size={20} className="text-primary-500" />
           </div>
           <div>
             <h3 className="text-h3 text-gray-900">거주지 설정</h3>
@@ -102,7 +102,7 @@ export default function SettingsPage() {
         </div>
         <div className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
           <div className="flex items-center gap-2">
-            <span>🏠</span>
+            <FaMapMarkerAlt className="text-primary-500" />
             <span className="font-medium text-gray-900">{selectedDistrict}</span>
           </div>
           <button 
@@ -123,7 +123,7 @@ export default function SettingsPage() {
       >
         <div className="flex items-center gap-4 mb-4">
           <div className="w-10 h-10 bg-primary-50 rounded-lg flex items-center justify-center">
-            <HiViewGrid size={20} className="text-primary-500" />
+            <FaTh size={20} className="text-primary-500" />
           </div>
           <div>
             <h3 className="text-h3 text-gray-900">브리핑 카테고리</h3>
@@ -132,10 +132,10 @@ export default function SettingsPage() {
         </div>
         <div className="space-y-4">
           {[
-            { key: 'weather', name: '날씨 정보', IconComponent: HiSun },
-            { key: 'community', name: '동네 이슈', IconComponent: HiChat },
-            { key: 'restaurants', name: '맛집 정보', IconComponent: HiLocationMarker },
-            { key: 'newRestaurants', name: '신규 개업', IconComponent: HiSparkles }
+            { key: 'weather', name: '날씨 정보', IconComponent: FaSun },
+            { key: 'community', name: '동네 이슈', IconComponent: FaComments },
+            { key: 'newRestaurants', name: '신규 개업 음식점', IconComponent: FaStar },
+            { key: 'hotRestaurants', name: '핫플 음식점', IconComponent: FaUtensils }
           ].map(category => (
             <div key={category.key} className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
               <div className="flex items-center gap-3">
@@ -170,7 +170,7 @@ export default function SettingsPage() {
       >
         <div className="flex items-center gap-4 mb-4">
           <div className="w-10 h-10 bg-primary-50 rounded-lg flex items-center justify-center">
-            <HiBell size={20} className="text-primary-500" />
+            <FaBell size={20} className="text-primary-500" />
           </div>
           <div>
             <h3 className="text-h3 text-gray-900">알림 설정</h3>
@@ -180,7 +180,7 @@ export default function SettingsPage() {
         <div className="space-y-4">
           <div className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
             <div className="flex items-center gap-2">
-              <span>🕐</span>
+              <FaBell className="text-gray-500" />
               <span className="text-body text-gray-900">브리핑 시간</span>
             </div>
             <select 
@@ -197,7 +197,7 @@ export default function SettingsPage() {
           </div>
           <div className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
             <div className="flex items-center gap-2">
-              <span>📅</span>
+              <FaBell className="text-gray-500" />
               <span className="text-body text-gray-900">주말 알림</span>
             </div>
             <button

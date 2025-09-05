@@ -51,17 +51,30 @@ export default function NewsCard({ title, IconComponent, items, delay = 0 }: New
           <h2 className="text-h3 text-gray-900">{title}</h2>
         </div>
         <div className="space-y-3">
-          {items.map((item, index) => (
-            <div key={index} className="p-4 bg-gray-50 rounded-xl border border-gray-100 hover:bg-gray-100 transition-colors">
-              <div className="flex items-start justify-between gap-2">
-                <p className="text-body font-medium flex-1 text-gray-900">{item.title}</p>
-                {item.sentiment && (
-                  <span className="text-lg">{getSentimentEmoji(item.sentiment)}</span>
-                )}
+          {items.length > 0 ? (
+            items.map((item, index) => (
+              <div key={index} className="p-4 bg-gray-50 rounded-xl border border-gray-100 hover:bg-gray-100 transition-colors">
+                <div className="flex items-start justify-between gap-2">
+                  <p className="text-body font-medium flex-1 text-gray-900">{item.title}</p>
+                  {item.sentiment && (
+                    <span className="text-lg">{getSentimentEmoji(item.sentiment)}</span>
+                  )}
+                </div>
+                <p className="text-small text-gray-600 mt-2">{item.source}</p>
               </div>
-              <p className="text-small text-gray-600 mt-2">{item.source}</p>
+            ))
+          ) : (
+            <div className="space-y-3">
+              {[...Array(3)].map((_, index) => (
+                <div key={index} className="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                  <div className="animate-pulse">
+                    <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
+                    <div className="h-3 bg-gray-300 rounded w-1/2"></div>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          )}
         </div>
       </Card>
     </motion.div>

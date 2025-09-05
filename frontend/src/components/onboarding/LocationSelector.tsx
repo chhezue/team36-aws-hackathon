@@ -14,8 +14,16 @@ export default function LocationSelector({ selectedGu, onSelect }: LocationSelec
   useEffect(() => {
     const fetchDistricts = async () => {
       try {
-        const data = await api.getDistricts()
-        setDistricts(data.districts || [])
+        const response = await api.getDistricts()
+        if (response.success && response.districts) {
+          // 데이터가 있는 구만 표시
+          const availableDistricts = response.districts
+            .filter((district: any) => district.has_data)
+            .map((district: any) => district.name)
+          setDistricts(availableDistricts.length > 0 ? availableDistricts : response.districts.map((d: any) => d.name))
+        } else {
+          throw new Error('데이터 형식 오류')
+        }
       } catch (error) {
         console.error('구 데이터 로드 실패:', error)
         setDistricts(['강남구', '강동구', '강북구']) // fallback

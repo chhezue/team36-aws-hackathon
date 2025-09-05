@@ -1,64 +1,25 @@
 #!/usr/bin/env python3
-"""
-LocalBriefing 프론트&백엔드 실행 스크립트
-"""
-
 import os
-import sys
 import subprocess
-import time
+import sys
 
-def setup_environment():
-    """환경 설정"""
-    print("🔧 환경 설정 중...")
+def main():
+    print("🚀 LocalBriefing 서버를 시작합니다...")
     
-    # Django 설치 확인
-    try:
-        import django
-        print(f"✅ Django {django.get_version()} 설치됨")
-    except ImportError:
-        print("📦 Django 설치 중...")
-        subprocess.run([sys.executable, '-m', 'pip', 'install', 'django'])
+    # 프로젝트 루트로 이동
+    project_root = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(project_root)
     
-    # requests 설치 확인
-    try:
-        import requests
-        print("✅ requests 라이브러리 설치됨")
-    except ImportError:
-        print("📦 requests 설치 중...")
-        subprocess.run([sys.executable, '-m', 'pip', 'install', 'requests'])
-
-def run_server():
-    """Django 서버 실행"""
-    print("\n🚀 LocalBriefing 서버 시작...")
+    # 가상환경 활성화 및 Django 서버 실행
+    venv_python = os.path.join(project_root, 'venv', 'bin', 'python')
+    manage_py = os.path.join(project_root, 'localbriefing', 'manage.py')
     
-    # localbriefing 디렉토리로 이동
-    os.chdir('localbriefing')
+    if not os.path.exists(venv_python):
+        print("❌ 가상환경이 없습니다. 먼저 'python -m venv venv'로 생성하세요.")
+        sys.exit(1)
     
-    # 마이그레이션 실행
-    print("📊 데이터베이스 마이그레이션...")
-    subprocess.run([sys.executable, 'manage.py', 'migrate'], check=False)
-    
-    # 서버 실행
-    print("🌐 서버 실행 중...")
-    print("📱 브라우저에서 다음 주소로 접속하세요:")
-    print("   - 온보딩: http://127.0.0.1:8000/")
-    print("   - 브리핑: http://127.0.0.1:8000/briefing/")
-    print("   - 설정: http://127.0.0.1:8000/settings/")
-    print("\n⏹️  서버 종료: Ctrl+C")
-    print("-" * 50)
-    
-    try:
-        subprocess.run([sys.executable, 'manage.py', 'runserver', '127.0.0.1:8000'])
-    except KeyboardInterrupt:
-        print("\n🛑 서버가 종료되었습니다.")
+    print("✅ 서버가 http://127.0.0.1:8000 에서 실행됩니다")
+    subprocess.run([venv_python, manage_py, 'runserver'])
 
 if __name__ == "__main__":
-    try:
-        setup_environment()
-        run_server()
-    except Exception as e:
-        print(f"❌ 오류 발생: {e}")
-        print("💡 문제가 지속되면 다음 명령어를 직접 실행해보세요:")
-        print("   cd localbriefing")
-        print("   python3 manage.py runserver")
+    main()

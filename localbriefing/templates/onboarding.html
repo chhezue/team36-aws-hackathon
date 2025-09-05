@@ -4,92 +4,148 @@
 
 {% block content %}
 <div class="onboarding-header">
-    <div class="logo">🏠 LocalBriefing</div>
+    <div class="logo">
+        <i data-lucide="home" style="width: 48px; height: 48px; color: var(--primary);"></i>
+    </div>
+    <h1 class="app-title">LocalBriefing</h1>
     <div class="subtitle-modern">우리 동네 소식을<br><span class="highlight-text">매일 아침</span> 받아보세요</div>
     <div class="feature-badges">
-        <span class="badge">✨ AI 요약</span>
-        <span class="badge">📍 맞춤형</span>
-        <span class="badge">⚡ 빠른 브리핑</span>
+        <span class="badge">
+            <i data-lucide="sparkles" style="width: 14px; height: 14px; margin-right: 4px;"></i>
+            AI 요약
+        </span>
+        <span class="badge">
+            <i data-lucide="map-pin" style="width: 14px; height: 14px; margin-right: 4px;"></i>
+            맞춤형
+        </span>
+        <span class="badge">
+            <i data-lucide="zap" style="width: 14px; height: 14px; margin-right: 4px;"></i>
+            빠른 브리핑
+        </span>
     </div>
 </div>
 
 <div id="step1" class="onboarding-step">
     <div class="login-options">
-        <button class="clay-btn primary large" onclick="nextStep()">
-            <span class="btn-icon">📧</span>
-            <span>이메일로 시작하기</span>
+        <button class="app-button primary large" onclick="nextStep()">
+            <i data-lucide="mail" style="width: 20px; height: 20px;"></i>
+            <span>비회원으로 시작하기</span>
         </button>
-        <button class="clay-btn secondary large" onclick="location.href='/users/kakao/login/'">
-            <span class="btn-icon">📱</span>
+        <button class="app-button secondary large" onclick="location.href='/users/kakao/login/'">
+            <i data-lucide="message-circle" style="width: 20px; height: 20px;"></i>
             <span>카카오로 시작하기</span>
         </button>
-        <button class="clay-btn secondary large" onclick="location.href='/users/naver/login/'">
-            <span class="btn-icon">🟢</span>
+        <button class="app-button secondary large" onclick="location.href='/users/naver/login/'">
+            <i data-lucide="globe" style="width: 20px; height: 20px;"></i>
             <span>네이버로 시작하기</span>
         </button>
     </div>
 </div>
 
 <div id="step2" class="onboarding-step" style="display: none;">
-    <div class="form-group">
-        <label class="form-label">📍 거주지 설정</label>
-        <select class="form-select" id="gu-select">
-            <option value="">구 선택</option>
-            <option value="강남구">강남구</option>
-            <option value="강동구">강동구</option>
-            <option value="강북구">강북구</option>
-            <option value="강서구">강서구</option>
-            <option value="관악구">관악구</option>
-            <option value="광진구">광진구</option>
-            <option value="구로구">구로구</option>
-            <option value="금천구">금천구</option>
-            <option value="노원구">노원구</option>
-            <option value="도봉구">도봉구</option>
-            <option value="동대문구">동대문구</option>
-            <option value="동작구">동작구</option>
-            <option value="마포구">마포구</option>
-            <option value="서대문구">서대문구</option>
-            <option value="서초구">서초구</option>
-            <option value="성동구">성동구</option>
-            <option value="성북구">성북구</option>
-            <option value="송파구">송파구</option>
-            <option value="양천구">양천구</option>
-            <option value="영등포구">영등포구</option>
-            <option value="용산구">용산구</option>
-            <option value="은평구">은평구</option>
-            <option value="종로구">종로구</option>
-            <option value="중구">중구</option>
-            <option value="중랑구">중랑구</option>
-        </select>
-    </div>
-    
-    <div class="subtitle" style="margin: 20px 0;">
-        💡 선택한 구의 맞춤 소식을<br>매일 받아보세요
+    <div class="app-card">
+        <div class="card-header">
+            <i data-lucide="map-pin" class="card-icon" style="width: 24px; height: 24px; color: var(--primary);"></i>
+            <div>
+                <h2 class="card-title">거주지 설정</h2>
+                <p class="card-subtitle">정확한 위치로 맞춤 소식을 받아보세요</p>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <select class="form-select" id="gu-select">
+                <option value="">구 선택</option>
+                <option value="강남구">강남구</option>
+                <option value="강동구">강동구</option>
+                <option value="강북구">강북구</option>
+                <option value="강서구">강서구</option>
+                <option value="관악구">관악구</option>
+                <option value="광진구">광진구</option>
+                <option value="구로구">구로구</option>
+                <option value="금천구">금천구</option>
+                <option value="노원구">노원구</option>
+                <option value="도봉구">도봉구</option>
+                <option value="동대문구">동대문구</option>
+                <option value="동작구">동작구</option>
+                <option value="마포구">마포구</option>
+                <option value="서대문구">서대문구</option>
+                <option value="서초구">서초구</option>
+                <option value="성동구">성동구</option>
+                <option value="성북구">성북구</option>
+                <option value="송파구">송파구</option>
+                <option value="양천구">양천구</option>
+                <option value="영등포구">영등포구</option>
+                <option value="용산구">용산구</option>
+                <option value="은평구">은평구</option>
+                <option value="종로구">종로구</option>
+                <option value="중구">중구</option>
+                <option value="중랑구">중랑구</option>
+            </select>
+        </div>
+        
+        <button class="app-button primary" onclick="nextStep()">
+            <span>다음</span>
+            <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
+        </button>
     </div>
     
     <button class="btn btn-primary" onclick="saveLocationAndNext()">다음</button>
+
 </div>
 
 <div id="step3" class="onboarding-step" style="display: none;">
-    <h3>✅ 관심 카테고리 선택</h3>
-    
-    <div class="category-grid">
-        <div class="category-item selected" data-category="weather">
-            <span class="card-icon">☀️</span>
-            <span>날씨 정보</span>
+    <div class="app-card">
+        <div class="card-header">
+            <i data-lucide="check-square" class="card-icon" style="width: 24px; height: 24px; color: var(--primary);"></i>
+            <div>
+                <h2 class="card-title">관심 카테고리</h2>
+                <p class="card-subtitle">받고 싶은 브리핑을 선택하세요</p>
+            </div>
         </div>
+        
+        <div class="category-grid">
+            <div class="category-item selected" data-category="weather">
+                <i data-lucide="sun" class="card-icon" style="width: 28px; height: 28px;"></i>
+                <div class="category-content">
+                    <div class="category-title">날씨 정보</div>
+                    <div class="category-desc">오늘의 날씨와 미세먼지</div>
+                </div>
+            </div>
 
-        <div class="category-item selected" data-category="community">
-            <span class="card-icon">💬</span>
-            <span>동네 이슈</span>
+            <div class="category-item selected" data-category="community">
+                <i data-lucide="message-square" class="card-icon" style="width: 28px; height: 28px;"></i>
+                <div class="category-content">
+                    <div class="category-title">동네 이슈</div>
+                    <div class="category-desc">우리 동네 핫한 소식</div>
+                </div>
+            </div>
+            
+            <div class="category-item selected" data-category="restaurants">
+                <i data-lucide="utensils" class="card-icon" style="width: 28px; height: 28px;"></i>
+                <div class="category-content">
+                    <div class="category-title">맛집 정보</div>
+                    <div class="category-desc">인기 맛집과 리뷰</div>
+                </div>
+            </div>
+            
+            <div class="category-item selected" data-category="new_restaurants">
+                <i data-lucide="plus-circle" class="card-icon" style="width: 28px; height: 28px;"></i>
+                <div class="category-content">
+                    <div class="category-title">신규 개업</div>
+                    <div class="category-desc">새로 생긴 음식점</div>
+                </div>
+            </div>
         </div>
-        <div class="category-item selected" data-category="restaurants">
-            <span class="card-icon">🍽️</span>
-            <span>맛집 정보</span>
-        </div>
-        <div class="category-item selected" data-category="new_restaurants">
-            <span class="card-icon">🆕</span>
-            <span>신장 개업 음식점</span>
+        
+        <div class="action-buttons">
+            <button class="app-button secondary" onclick="selectAll()">
+                <i data-lucide="check-circle" style="width: 16px; height: 16px;"></i>
+                <span>모두 선택</span>
+            </button>
+            <button class="app-button primary" onclick="nextStep()">
+                <span>완료</span>
+                <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
+            </button>
         </div>
     </div>
     
@@ -97,24 +153,29 @@
         <button class="btn btn-secondary" onclick="selectAll()">모두 선택</button>
         <button class="btn btn-primary" onclick="completeOnboarding()">완료</button>
     </div>
+
 </div>
 
 <div id="step4" class="onboarding-step" style="display: none;">
-    <div class="header">
-        <div style="font-size: 48px; margin-bottom: 20px;">🎉</div>
-        <h2>설정 완료!</h2>
-        <div class="subtitle">
-            내일 아침 7시에<br>
-            첫 브리핑을 보내드릴게요
+    <div class="app-card text-center">
+        <div style="margin-bottom: 24px;">
+            <i data-lucide="party-popper" style="width: 64px; height: 64px; color: var(--success);"></i>
         </div>
+        <h2 class="card-title mb-md">설정 완료!</h2>
+        <p class="card-subtitle mb-lg">
+            내일 아침 7시에<br>
+            첫 브리핑을 보내드릴게요.
+        </p>
+
+        <button class="app-button secondary" onclick="location.href='/briefing/'" style="margin-top: 12px;">
+            <i data-lucide="eye" style="width: 20px; height: 20px;"></i>
+            <span>시작하기</span>
+        </button>
     </div>
-    
-    <button class="btn btn-primary" onclick="location.href='/briefing/'">
-        오늘 브리핑 미리보기
-    </button>
 </div>
 
 <script>
+
 let currentStep = 1;
 let selectedLocation = '';
 

@@ -4,24 +4,41 @@
 {% block title %}LocalBriefing - 오늘의 브리핑{% endblock %}
 
 {% block content %}
+<div class="app-header">
+    <h1 class="app-title">브리핑</h1>
+    <div class="header-actions">
+        <button class="app-button secondary" onclick="location.href='/settings/'" style="padding: 8px 12px; margin: 0;">
+            <i data-lucide="settings" style="width: 20px; height: 20px;"></i>
+        </button>
+    </div>
+</div>
+
 <div class="briefing-header">
-    <div class="user-greeting">안녕하세요, <span class="user-name">{{ user_name }}</span>님! 👋</div>
-    <div class="location-badge">📍 {{ location }}</div>
+    <div class="user-greeting">
+        안녕하세요, <span class="user-name">{{ user_name }}</span>님! 
+        <i data-lucide="hand" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle;"></i>
+    </div>
+    <div class="location-badge">
+        <i data-lucide="map-pin" style="width: 14px; height: 14px; margin-right: 4px;"></i>
+        {{ location }}
+    </div>
     <div class="date-info">{{ date }}</div>
 </div>
 
-<!-- Bento Grid Layout -->
 <div class="bento-grid">
-    <!-- Weather - Large Card -->
-    <div class="bento-item weather-large">
-        <div class="glass-card">
-            <div class="card-header-minimal">
-                <span class="weather-icon">☀️</span>
-                <span class="card-title-bold">날씨</span>
+    <!-- Weather Card -->
+    <div class="bento-item">
+        <div class="app-card">
+            <div class="card-header">
+                <i data-lucide="sun" class="card-icon" style="width: 24px; height: 24px; color: var(--secondary);"></i>
+                <div>
+                    <h3 class="card-title">오늘의 날씨</h3>
+                </div>
             </div>
             <div class="weather-display">
                 <div class="weather-main-temp">{{ weather.temp }}</div>
                 <div class="weather-condition">{{ weather.condition }}</div>
+
                 <div class="weather-dust">미세먼지 {{ weather.dust }}</div>
                 
                 {% if weather.hourly_forecast %}
@@ -42,52 +59,80 @@
         </div>
     </div>
 
-
-
-    <!-- Community Issues - Wide Card -->
-    <div class="bento-item community-wide">
-        <div class="glass-card">
-            <div class="card-header-minimal">
-                <span class="clay-icon">💬</span>
-                <span class="card-title-bold">동네 이슈</span>
+    <!-- Community Issues Card -->
+    <div class="bento-item">
+        <div class="app-card">
+            <div class="card-header">
+                <i data-lucide="message-square" class="card-icon" style="width: 24px; height: 24px; color: var(--primary);"></i>
+                <div>
+                    <h3 class="card-title">동네 이슈</h3>
+                    <p class="card-subtitle">우리 동네 핫한 소식</p>
+                </div>
             </div>
             <div class="community-preview">
                 {% if local_issues.youtube %}
                     {% for issue in local_issues.youtube %}
                     <div class="issue-item" onclick="window.open('{{ issue.url }}', '_blank')">
-                        📺 {{ issue.title|truncatechars:50 }}
-                        {% if issue.view_count > 0 %}<span class="view-count">{{ issue.view_count|format_view_count }}</span>{% endif %}
+                        <div class="issue-content">
+                            <i data-lucide="play-circle" class="issue-icon"></i>
+                            <span class="issue-title">{{ issue.title }}</span>
+                        </div>
+                        {% if issue.view_count > 0 %}
+                        <span class="view-count">
+                            <i data-lucide="eye" style="width: 10px; height: 10px; margin-right: 2px;"></i>
+                            {{ issue.view_count|format_view_count }}
+                        </span>
+                        {% endif %}
                     </div>
                     {% endfor %}
                 {% endif %}
                 {% if local_issues.naver_search %}
                     {% for issue in local_issues.naver_search %}
                     <div class="issue-item" onclick="window.open('{{ issue.url }}', '_blank')">
-                        🔍 {{ issue.title|truncatechars:50 }}
+                        <div class="issue-content">
+                            <i data-lucide="search" class="issue-icon"></i>
+                            <span class="issue-title">{{ issue.title }}</span>
+                        </div>
                     </div>
                     {% endfor %}
                 {% endif %}
                 {% if local_issues.naver_news %}
                     {% for issue in local_issues.naver_news %}
                     <div class="issue-item" onclick="window.open('{{ issue.url }}', '_blank')">
-                        📰 {{ issue.title|truncatechars:50 }}
+                        <div class="issue-content">
+                            <i data-lucide="newspaper" class="issue-icon"></i>
+                            <span class="issue-title">{{ issue.title }}</span>
+                        </div>
                     </div>
                     {% endfor %}
                 {% endif %}
                 {% if not local_issues.youtube and not local_issues.naver_search and not local_issues.naver_news %}
-                    <div class="issue-item">🚧 역삼역 근처 공사로 교통 혼잡</div>
-                    <div class="issue-item">☕ 새로 생긴 카페 후기 좋음</div>
+                    <div class="issue-item">
+                        <div style="display: flex; align-items: center;">
+                            <i data-lucide="construction" style="width: 16px; height: 16px; margin-right: 8px; color: var(--warning);"></i>
+                            역삼역 근처 공사로 교통 혼잡
+                        </div>
+                    </div>
+                    <div class="issue-item">
+                        <div style="display: flex; align-items: center;">
+                            <i data-lucide="coffee" style="width: 16px; height: 16px; margin-right: 8px; color: var(--success);"></i>
+                            새로 생긴 카페 후기 좋음
+                        </div>
+                    </div>
                 {% endif %}
             </div>
         </div>
     </div>
 
-    <!-- Popular Restaurants - Full Width -->
-    <div class="bento-item restaurants-wide">
-        <div class="glass-card">
-            <div class="card-header-minimal">
-                <span class="clay-icon">🍽️</span>
-                <span class="card-title-bold">맛집 정보</span>
+    <!-- Popular Restaurants Card -->
+    <div class="bento-item">
+        <div class="app-card">
+            <div class="card-header">
+                <i data-lucide="utensils" class="card-icon" style="width: 24px; height: 24px; color: var(--secondary);"></i>
+                <div>
+                    <h3 class="card-title">인기 맛집</h3>
+                    <p class="card-subtitle">동네 맛집 추천</p>
+                </div>
             </div>
             <div class="restaurant-list">
                 {% if popular_restaurants %}
@@ -95,9 +140,16 @@
                     <div class="restaurant-item" onclick="window.open('{{ restaurant.place_url }}', '_blank')">
                         <div class="restaurant-info">
                             <div class="restaurant-name">{{ restaurant.name }}</div>
+                            <div class="restaurant-category">
+                                <i data-lucide="map-pin" style="width: 12px; height: 12px; margin-right: 4px;"></i>
+                                {{ restaurant.category|default:"음식점" }}
+                            </div>
                         </div>
                         <div class="restaurant-meta">
-                            <span class="restaurant-type">{{ restaurant.category|default:"음식점" }}</span>
+                            <span class="restaurant-type">
+                                <i data-lucide="star" style="width: 12px; height: 12px; margin-right: 2px;"></i>
+                                인기
+                            </span>
                         </div>
                     </div>
                     {% endfor %}
@@ -110,12 +162,15 @@
         </div>
     </div>
 
-    <!-- New Restaurants - Full Width -->
-    <div class="bento-item new-restaurants-wide">
-        <div class="glass-card">
-            <div class="card-header-minimal">
-                <span class="clay-icon">🆕</span>
-                <span class="card-title-bold">신장 개업 음식점</span>
+    <!-- New Restaurants Card -->
+    <div class="bento-item">
+        <div class="app-card">
+            <div class="card-header">
+                <i data-lucide="plus-circle" class="card-icon" style="width: 24px; height: 24px; color: var(--success);"></i>
+                <div>
+                    <h3 class="card-title">신규 개업</h3>
+                    <p class="card-subtitle">새로 생긴 음식점</p>
+                </div>
             </div>
             <div class="restaurant-list">
                 {% if new_restaurants %}
@@ -123,10 +178,36 @@
                     <div class="restaurant-item" onclick="window.open('https://map.naver.com/v5/search/{{ restaurant.address|urlencode }}', '_blank')">
                         <div class="restaurant-info">
                             <div class="restaurant-name">{{ restaurant.name }}</div>
-                            <div class="restaurant-category">{{ restaurant.category|default:"음식점" }}</div>
+                            <div class="restaurant-category">
+                                <i data-lucide="map-pin" style="width: 12px; height: 12px; margin-right: 4px;"></i>
+                                {% if restaurant.category %}
+                                    {{ restaurant.category }}
+                                {% elif '카페' in restaurant.name %}
+                                    카페
+                                {% elif '치킨' in restaurant.name %}
+                                    치킨
+                                {% elif '피자' in restaurant.name %}
+                                    피자
+                                {% elif '한식' in restaurant.name %}
+                                    한식
+                                {% elif '중식' in restaurant.name %}
+                                    중식
+                                {% elif '일식' in restaurant.name %}
+                                    일식
+                                {% elif '양식' in restaurant.name %}
+                                    양식
+                                {% elif '휴게음식점' in restaurant.name %}
+                                    휴게음식점
+                                {% else %}
+                                    신규 개업
+                                {% endif %}
+                            </div>
                         </div>
                         <div class="restaurant-meta">
-                            <span class="opening-date">개업일: {{ restaurant.license_date|default:"미상" }}</span>
+                            <span class="opening-date">
+                                <i data-lucide="calendar" style="width: 12px; height: 12px; margin-right: 2px;"></i>
+                                {{ restaurant.license_date|default:"신규" }}
+                            </span>
                         </div>
                     </div>
                     {% endfor %}
@@ -138,19 +219,14 @@
             </div>
         </div>
     </div>
-
-    <!-- Quick Actions - Navigation -->
-    <div class="bento-item actions-wide">
-        <div class="action-buttons">
-            <button class="clay-btn secondary" onclick="history.back()">
-                <span class="btn-icon">⏮️</span>
-                <span>이전 브리핑</span>
-            </button>
-            <button class="clay-btn primary" onclick="location.href='/settings/'">
-                <span class="btn-icon">⚙️</span>
-                <span>설정</span>
-            </button>
-        </div>
-    </div>
 </div>
+
+<script>
+// Initialize icons after DOM content is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+});
+</script>
 {% endblock %}

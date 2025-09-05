@@ -1,7 +1,0 @@
-node_modules/
-venv/
-*.pyc
-__pycache__/
-.git/
-*.sqlite3
-*.log

@@ -91,6 +91,15 @@ KAKAO_CLIENT_ID = os.environ.get('KAKAO_API_KEY')
 NAVER_CLIENT_ID = os.environ.get('NAVER_CLIENT_ID')
 NAVER_CLIENT_SECRET = os.environ.get('NAVER_CLIENT_SECRET')
 
+# 테마 설정
+DEFAULT_THEME = 'b'  # B안 테마를 기본값으로 설정
+THEME_COLORS = {
+    'primary': '#6A7954',
+    'secondary': '#8FA876',
+    'background': '#F5F3F0',
+    'card': '#EAE0D5'
+}
+
 # 로깅 설정
 LOGGING = {
     'version': 1,

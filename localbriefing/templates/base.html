@@ -2,20 +2,218 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="LocalBriefing">
+    <meta name="theme-color" content="#6A7954">
+    
     <title>{% block title %}LocalBriefing{% endblock %}</title>
+    
     {% load static %}
+    
+    <!-- Preload critical fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon.svg' %}">
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+    
+    <!-- Icon Library -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <!-- Styles -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <!-- Theme Styles -->
+    <script>
+        // Load theme before page renders (B안 기본 적용)
+        const savedTheme = localStorage.getItem('selectedTheme') || new URLSearchParams(window.location.search).get('theme') || 'b';
+        if (savedTheme && ['a', 'b'].includes(savedTheme)) {
+            const themeLink = document.createElement('link');
+            themeLink.rel = 'stylesheet';
+            themeLink.href = `/static/css/theme-${savedTheme}.css`;
+            themeLink.setAttribute('data-theme', savedTheme);
+            document.head.appendChild(themeLink);
+        }
+    </script>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <style>
+        /* Critical CSS for immediate rendering */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            background: #F2F2F7;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .container {
+            max-width: 390px;
+            margin: 0 auto;
+            background: #F2F2F7;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        /* Loading spinner */
+        .loading-spinner {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #6A7954;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            z-index: 9999;
+        }
+        
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="loading-spinner" style="display: none;"></div>
+    
+    <!-- Main Container -->
     <div class="container">
         {% block content %}
         {% endblock %}
     </div>
     
+    <!-- Scripts -->
     <script src="{% static 'js/app.js' %}"></script>
+    
+    <!-- PWA Install Prompt -->
+    <script>
+        let deferredPrompt;
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent Chrome 67 and earlier from automatically showing the prompt
+            e.preventDefault();
+            // Stash the event so it can be triggered later
+            deferredPrompt = e;
+            
+            // Show install button/banner
+            showInstallPrompt();
+        });
+        
+        function showInstallPrompt() {
+            // Create install prompt
+            const installBanner = document.createElement('div');
+            installBanner.innerHTML = `
+                <div style="
+                    position: fixed;
+                    bottom: 20px;
+                    left: 20px;
+                    right: 20px;
+                    background: var(--bg-card, #FFFFFF);
+                    border-radius: 16px;
+                    padding: 16px;
+                    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+                    z-index: 1000;
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                ">
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600; margin-bottom: 4px;">앱으로 설치</div>
+                        <div style="font-size: 14px; color: #8E8E93;">홈 화면에 추가하여 더 편리하게 이용하세요</div>
+                    </div>
+                    <button onclick="installApp()" style="
+                        background: linear-gradient(135deg, #6A7954 0%, #7A8B5C 100%);
+                        color: white;
+                        border: none;
+                        border-radius: 12px;
+                        padding: 8px 16px;
+                        font-weight: 600;
+                        cursor: pointer;
+                    ">설치</button>
+                    <button onclick="dismissInstall()" style="
+                        background: transparent;
+                        color: #8E8E93;
+                        border: none;
+                        font-size: 18px;
+                        cursor: pointer;
+                        padding: 8px;
+                    ">&times;</button>
+                </div>
+            `;
+            installBanner.id = 'installBanner';
+            document.body.appendChild(installBanner);
+        }
+        
+        function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the A2HS prompt');
+                    }
+                    deferredPrompt = null;
+                    dismissInstall();
+                });
+            }
+        }
+        
+        function dismissInstall() {
+            const banner = document.getElementById('installBanner');
+            if (banner) {
+                banner.remove();
+            }
+        }
+        
+        // Show loading spinner for navigation
+        function showLoading() {
+            document.getElementById('loadingSpinner').style.display = 'block';
+        }
+        
+        function hideLoading() {
+            document.getElementById('loadingSpinner').style.display = 'none';
+        }
+        
+        // Hide loading when page is fully loaded
+        window.addEventListener('load', function() {
+            hideLoading();
+            // Initialize Lucide icons
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+        
+        // Show loading on form submissions and navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {
+                form.addEventListener('submit', showLoading);
+            });
+            
+            const links = document.querySelectorAll('a[href^="/"]');
+            links.forEach(link => {
+                link.addEventListener('click', showLoading);
+            });
+        });
+        
+        // Performance monitoring
+        window.addEventListener('load', function() {
+            if ('performance' in window) {
+                const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
+                console.log('Page load time:', loadTime + 'ms');
+            }
+        });
+    </script>
 </body>
 </html>

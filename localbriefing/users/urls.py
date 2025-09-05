@@ -10,4 +10,5 @@ urlpatterns = [
     path('briefing/', views.briefing_view, name='briefing'),
     path('set-location/', views.set_user_location, name='set_user_location'),
     path('complete-onboarding/', views.complete_onboarding, name='complete_onboarding'),
+    path('theme-selector/', views.theme_selector, name='theme_selector'),
 ]

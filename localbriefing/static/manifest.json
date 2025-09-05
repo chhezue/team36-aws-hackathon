@@ -1,0 +1,16 @@
+{
+  "name": "LocalBriefing",
+  "short_name": "LocalBriefing",
+  "description": "우리 동네 소식을 매일 아침 받아보세요",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F3F0",
+  "theme_color": "#6A7954",
+  "icons": [
+    {
+      "src": "/static/icons/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

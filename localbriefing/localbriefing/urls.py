@@ -4,11 +4,8 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from users.views import briefing_view as users_briefing_view
-try:
-    from restaurants.views import get_restaurant_data
-except ImportError:
-    def get_restaurant_data(district):
-        return {'new_restaurants': [], 'popular_restaurants': []}
+def get_restaurant_data(district):
+    return {'new_restaurants': [], 'popular_restaurants': []}
 
 # 서울시 구/동 데이터
 SEOUL_DISTRICTS = {
@@ -106,19 +103,14 @@ def settings_view(request):
     }
     return render(request, 'settings.html', settings_data)
 
-def glassmorphism_demo_view(request):
-    return render(request, 'glassmorphism_demo.html')
 
-def glassmorphism_login_view(request):
-    return render(request, 'glassmorphism_login.html')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', onboarding_view, name='onboarding'),
     path('briefing/', users_briefing_view, name='briefing'),
     path('settings/', settings_view, name='settings'),
-    path('glassmorphism/', glassmorphism_demo_view, name='glassmorphism_demo'),
-    path('login/', glassmorphism_login_view, name='glassmorphism_login'),
+
     path('users/', include('users.urls')),
     path('api/districts/', get_districts, name='get_districts'),
     path('api/dongs/', get_dongs, name='get_dongs'),

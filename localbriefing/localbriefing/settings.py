@@ -2,10 +2,14 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-# .env 파일 로드
-load_dotenv()
-
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# .env 파일 로드 (명시적 경로 지정)
+env_path = BASE_DIR.parent / '.env'
+load_dotenv(env_path)
+print(f"ENV 파일 경로: {env_path}")
+print(f"ENV 파일 존재: {env_path.exists()}")
+print(f"DATA_GO_KR_API_KEY 환경변수: {os.environ.get('DATA_GO_KR_API_KEY', 'None')[:10]}...")
 
 SECRET_KEY = 'django-insecure-prototype-key-change-in-production'
 
@@ -77,11 +81,15 @@ AUTH_USER_MODEL = 'users.User'
 # API 키 설정
 SEOUL_API_KEY = os.environ.get('SEOUL_API_KEY')
 KAKAO_API_KEY = os.environ.get('KAKAO_API_KEY')
+WEATHER_API_KEY = os.environ.get('DATA_GO_KR_API_KEY')
+
+# 디버깅용 API 키 확인
+print(f"WEATHER_API_KEY: {WEATHER_API_KEY[:10] if WEATHER_API_KEY else 'None'}...")
 
 # 소셜 로그인 설정
-KAKAO_CLIENT_ID = os.environ.get('KAKAO_CLIENT_ID')
-NAVER_CLIENT_ID = os.environ.get('NAVER_LOGIN_CLIENT_ID')
-NAVER_CLIENT_SECRET = os.environ.get('NAVER_LOGIN_CLIENT_SECRET')
+KAKAO_CLIENT_ID = os.environ.get('KAKAO_API_KEY')
+NAVER_CLIENT_ID = os.environ.get('NAVER_CLIENT_ID')
+NAVER_CLIENT_SECRET = os.environ.get('NAVER_CLIENT_SECRET')
 
 # 테마 설정
 DEFAULT_THEME = 'b'  # B안 테마를 기본값으로 설정

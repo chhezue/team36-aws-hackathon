@@ -601,6 +601,75 @@ body {
     color: var(--text-secondary);
 }
 
+/* 시간별 예보 스타일 */
+.hourly-forecast {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+.forecast-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    text-align: left;
+}
+
+.forecast-items {
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+}
+
+.forecast-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+    padding: 8px;
+    background: var(--background);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.forecast-item:hover {
+    background: var(--primary);
+    color: var(--white);
+    transform: translateY(-2px);
+}
+
+.forecast-time {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.forecast-item:hover .forecast-time {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.forecast-temp {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.forecast-item:hover .forecast-temp {
+    color: var(--white);
+}
+
+.forecast-condition {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.forecast-item:hover .forecast-condition {
+    color: rgba(255, 255, 255, 0.7);
+}
+
 .settings-section {
     margin-bottom: 30px;
 }

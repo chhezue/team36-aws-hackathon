@@ -2,6 +2,8 @@ import requests
 import os
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 from django.contrib.auth import login
 from django.conf import settings
 from .models import User, Location, LocalIssue
@@ -110,16 +112,82 @@ def naver_callback(request):
 def email_login(request):
     return redirect('/briefing/')
 
+@csrf_exempt
+def set_user_location(request):
+    """사용자 거주지 설정 API"""
+    if request.method == 'POST':
+        import json
+        data = json.loads(request.body)
+        gu_name = data.get('gu')
+        
+        if gu_name:
+            # Location 객체 생성 또는 조회
+            location, created = Location.objects.get_or_create(gu=gu_name)
+            
+            # 세션에 임시 저장 (로그인 전)
+            request.session['selected_location'] = gu_name
+            
+            # 로그인된 사용자인 경우 바로 저장
+            if request.user.is_authenticated:
+                request.user.location = location
+                request.user.save()
+            
+            return JsonResponse({'success': True, 'location': gu_name})
+    
+    return JsonResponse({'success': False})
+
+@csrf_exempt
+def complete_onboarding(request):
+    """온보딩 완료 처리"""
+    if request.method == 'POST':
+        # 세션에서 선택된 위치 정보 가져오기
+        selected_location = request.session.get('selected_location')
+        
+        if selected_location and request.user.is_authenticated:
+            location, created = Location.objects.get_or_create(gu=selected_location)
+            request.user.location = location
+            request.user.save()
+            
+            # 세션 정리
+            if 'selected_location' in request.session:
+                del request.session['selected_location']
+        
+        return JsonResponse({'success': True})
+    
+    return JsonResponse({'success': False})
+
 def briefing_view(request):
     import logging
     logger = logging.getLogger(__name__)
     
     logger.info("=== 브리핑 뷰 시작 ===")
     
+    # 사용자 위치 정보 가져오기
+    user_location = '강남구'  # 기본값
+    user_name = '김철수'  # 기본값
+    
+    if request.user.is_authenticated:
+        # 로그인된 사용자의 위치 정보
+        if hasattr(request.user, 'location') and request.user.location:
+            user_location = request.user.location.gu
+        
+        # 사용자 이름 설정
+        if request.user.first_name:
+            user_name = request.user.first_name
+        elif request.user.username:
+            user_name = request.user.username
+    else:
+        # 비로그인 사용자의 경우 세션에서 위치 정보 가져오기
+        session_location = request.session.get('selected_location')
+        if session_location:
+            user_location = session_location
+    
+    logger.info(f"사용자 위치: {user_location}, 사용자명: {user_name}")
+    
     # 실제 음식점 데이터 가져오기
     try:
         from restaurants.views import get_restaurant_data
-        restaurant_data = get_restaurant_data('강남구')
+        restaurant_data = get_restaurant_data(user_location)
         new_restaurants = restaurant_data.get('new_restaurants', [])
         popular_restaurants = restaurant_data.get('popular_restaurants', [])
         
@@ -130,11 +198,26 @@ def briefing_view(request):
         new_restaurants = []
         popular_restaurants = []
     
-    # 기본 사용자 위치 (강남구)
+    # 실제 날씨 데이터 가져오기
     try:
-        location = Location.objects.get(gu='강남구')
+        from .weather_service import WeatherService
+        weather_service = WeatherService()
+        weather_data = weather_service.get_weather_by_location(user_location)
+        logger.info(f"날씨 데이터 로딩 성공: {user_location}")
+    except Exception as e:
+        logger.error(f"날씨 데이터 로딩 오류: {str(e)}")
+        weather_data = {
+            'temp': '18°C',
+            'condition': '맑음',
+            'dust': '보통',
+            'description': '외출하기 좋은 날씨예요'
+        }
+    
+    # 사용자 위치 객체 가져오기
+    try:
+        location = Location.objects.get(gu=user_location)
     except Location.DoesNotExist:
-        location = Location.objects.create(gu='강남구')
+        location = Location.objects.create(gu=user_location)
     
     # 7일 이내 데이터만 조회
     seven_days_ago = timezone.now() - timedelta(days=7)
@@ -159,15 +242,10 @@ def briefing_view(request):
     ).order_by('-collected_at')[:5]
     
     briefing_data = {
-        'user_name': '김철수',
-        'location': '강남구 역삼동',
-        'date': '2024년 3월 15일 금요일',
-        'weather': {
-            'condition': '맑음',
-            'temp': '18°C',
-            'dust': '보통',
-            'description': '외출하기 좋은 날씨예요'
-        },
+        'user_name': user_name,
+        'location': f'{user_location} 역삼동',
+        'date': datetime.now().strftime('%Y년 %m월 %d일 %A'),
+        'weather': weather_data,
         'district_news': [
             '역삼동 도서관 리모델링 완료',
             '3월 말까지 무료 독감 예방접종',

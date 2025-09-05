@@ -67,7 +67,7 @@
         💡 선택한 구의 맞춤 소식을<br>매일 받아보세요
     </div>
     
-    <button class="btn btn-primary" onclick="nextStep()">다음</button>
+    <button class="btn btn-primary" onclick="saveLocationAndNext()">다음</button>
 </div>
 
 <div id="step3" class="onboarding-step" style="display: none;">
@@ -95,7 +95,7 @@
     
     <div class="nav-buttons">
         <button class="btn btn-secondary" onclick="selectAll()">모두 선택</button>
-        <button class="btn btn-primary" onclick="nextStep()">완료</button>
+        <button class="btn btn-primary" onclick="completeOnboarding()">완료</button>
     </div>
 </div>
 
@@ -113,4 +113,82 @@
         오늘 브리핑 미리보기
     </button>
 </div>
+
+<script>
+let currentStep = 1;
+let selectedLocation = '';
+
+function nextStep() {
+    document.getElementById('step' + currentStep).style.display = 'none';
+    currentStep++;
+    document.getElementById('step' + currentStep).style.display = 'block';
+}
+
+function saveLocationAndNext() {
+    const guSelect = document.getElementById('gu-select');
+    selectedLocation = guSelect.value;
+    
+    if (!selectedLocation) {
+        alert('구를 선택해주세요.');
+        return;
+    }
+    
+    fetch('/users/set-location/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ gu: selectedLocation })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            nextStep();
+        } else {
+            alert('위치 설정에 실패했습니다.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('오류가 발생했습니다.');
+    });
+}
+
+function completeOnboarding() {
+    fetch('/users/complete-onboarding/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            nextStep();
+        } else {
+            alert('설정 완료에 실패했습니다.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        nextStep();
+    });
+}
+
+function selectAll() {
+    const items = document.querySelectorAll('.category-item');
+    items.forEach(item => {
+        item.classList.add('selected');
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const categoryItems = document.querySelectorAll('.category-item');
+    categoryItems.forEach(item => {
+        item.addEventListener('click', function() {
+            this.classList.toggle('selected');
+        });
+    });
+});
+</script>
 {% endblock %}

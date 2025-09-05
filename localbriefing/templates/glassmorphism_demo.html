@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LocalBriefing - Glassmorphism UI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #E0F7FA 0%, #E1BEE7 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 32px;
+            width: 100%;
+            max-width: 360px;
+        }
+
+        .title {
+            color: #333333;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .task-list {
+            list-style: none;
+        }
+
+        .task-item {
+            color: #333333;
+            font-size: 16px;
+            line-height: 1.5;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(51, 51, 51, 0.1);
+        }
+
+        .task-item:last-child {
+            border-bottom: none;
+        }
+
+        .task-item::before {
+            content: "•";
+            margin-right: 12px;
+            color: #666666;
+        }
+    </style>
+</head>
+<body>
+    <div class="glass-card">
+        <h1 class="title">My Tasks</h1>
+        <ul class="task-list">
+            <li class="task-item">Check morning briefing</li>
+            <li class="task-item">Review neighborhood updates</li>
+            <li class="task-item">Browse local restaurant recommendations</li>
+            <li class="task-item">Check weather forecast</li>
+            <li class="task-item">Update location settings</li>
+        </ul>
+    </div>
+</body>
+</html>

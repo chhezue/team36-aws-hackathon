@@ -3,85 +3,102 @@
 {% block title %}LocalBriefing - 오늘의 브리핑{% endblock %}
 
 {% block content %}
-<div class="location-header">
-    <div class="user-greeting">👤 {{ user_name }}님</div>
-    <div class="location-info">📍 {{ location }}</div>
+<div class="briefing-header">
+    <div class="user-greeting">안녕하세요, <span class="user-name">{{ user_name }}</span>님! 👋</div>
+    <div class="location-badge">📍 {{ location }}</div>
     <div class="date-info">{{ date }}</div>
 </div>
 
-<div class="briefing-card weather-card">
-    <div class="card-header">
-        <span class="card-icon">☀️</span>
-        <span class="card-title">오늘의 날씨</span>
-    </div>
-    <div class="weather-main">
-        <div>
-            <div class="weather-condition">🌤️ {{ weather.condition }}</div>
-            <div class="weather-temp">최고 {{ weather.temp }}</div>
+<!-- Bento Grid Layout -->
+<div class="bento-grid">
+    <!-- Weather - Large Card -->
+    <div class="bento-item weather-large">
+        <div class="glass-card">
+            <div class="card-header-minimal">
+                <span class="weather-icon">☀️</span>
+                <span class="card-title-bold">날씨</span>
+            </div>
+            <div class="weather-display">
+                <div class="weather-main-temp">{{ weather.temp }}</div>
+                <div class="weather-condition">{{ weather.condition }}</div>
+                <div class="weather-dust">미세먼지 {{ weather.dust }}</div>
+            </div>
         </div>
     </div>
-    <div>미세먼지 {{ weather.dust }}</div>
-    <div style="margin-top: 10px;">{{ weather.description }}</div>
-</div>
 
-<div class="briefing-card">
-    <div class="card-header">
-        <span class="card-icon">📢</span>
-        <span class="card-title">구청 소식</span>
+    <!-- District News - Medium Card -->
+    <div class="bento-item district-medium">
+        <div class="glass-card">
+            <div class="card-header-minimal">
+                <span class="clay-icon">📢</span>
+                <span class="card-title-bold">구청 소식</span>
+            </div>
+            <div class="news-list">
+                {% for news in district_news %}
+                <div class="news-item">{{ news }}</div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
-    <div class="card-content">
-        <ul>
-            {% for news in district_news %}
-            <li>{{ news }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-</div>
 
-<div class="briefing-card">
-    <div class="card-header">
-        <span class="card-icon">💬</span>
-        <span class="card-title">동네 이슈</span>
+    <!-- Community Issues - Wide Card -->
+    <div class="bento-item community-wide">
+        <div class="glass-card">
+            <div class="card-header-minimal">
+                <span class="clay-icon">💬</span>
+                <span class="card-title-bold">동네 이슈</span>
+            </div>
+            <div class="community-preview">
+                <div class="issue-item">🚧 역삼역 근처 공사로 교통 혼잡</div>
+                <div class="issue-item">☕ 새로 생긴 카페 후기 좋음</div>
+            </div>
+        </div>
     </div>
-    <div class="card-content">
-        <ul>
-            {% for issue in community_issues %}
-            <li>{{ issue }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-</div>
 
-<div class="briefing-card">
-    <div class="card-header">
-        <span class="card-icon">🥕</span>
-        <span class="card-title">인기 중고거래</span>
+    <!-- Restaurants - Small Card -->
+    <div class="bento-item restaurants-small">
+        <div class="glass-card">
+            <div class="card-header-minimal">
+                <span class="clay-icon">🍽️</span>
+                <span class="card-title-compact">맛집 정보</span>
+            </div>
+            <div class="restaurant-preview">
+                <div class="item-text">24시간 족발집 인기</div>
+                <div class="item-text">디저트 카페 할인 이벤트</div>
+            </div>
+        </div>
     </div>
-    <div class="card-content">
-        <ul>
-            {% for item in secondhand %}
-            <li>{{ item }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-</div>
 
-<div class="briefing-card">
-    <div class="card-header">
-        <span class="card-icon">🍽️</span>
-        <span class="card-title">새로운 맛집</span>
+    <!-- New Restaurants - Small Card -->
+    <div class="bento-item new-restaurants-small">
+        <div class="glass-card">
+            <div class="card-header-minimal">
+                <span class="clay-icon">🆕</span>
+                <span class="card-title-compact">신장 개업 음식점</span>
+            </div>
+            <div class="restaurant-count">
+                {% if new_restaurants|length > 0 %}
+                    <span class="count-number">{{ new_restaurants|length }}</span>
+                    <span class="count-label">곳</span>
+                {% else %}
+                    <span class="loading-text">준비중...</span>
+                {% endif %}
+            </div>
+        </div>
     </div>
-    <div class="card-content">
-        <ul>
-            {% for restaurant in restaurants %}
-            <li>{{ restaurant }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-</div>
 
-<div class="nav-buttons">
-    <button class="btn btn-secondary" onclick="history.back()">이전 브리핑 보기</button>
-    <button class="btn btn-primary" onclick="location.href='/settings/'">설정</button>
+    <!-- Quick Actions - Navigation -->
+    <div class="bento-item actions-wide">
+        <div class="action-buttons">
+            <button class="clay-btn secondary" onclick="history.back()">
+                <span class="btn-icon">⏮️</span>
+                <span>이전 브리핑</span>
+            </button>
+            <button class="clay-btn primary" onclick="location.href='/settings/'">
+                <span class="btn-icon">⚙️</span>
+                <span>설정</span>
+            </button>
+        </div>
+    </div>
 </div>
 {% endblock %}

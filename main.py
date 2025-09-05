@@ -1,16 +1,37 @@
-# 샘플 Python 스크립트입니다.
+#!/usr/bin/env python3
+"""
+LocalBriefing 프로젝트 메인 실행 파일
+"""
 
-# ⌃R을(를) 눌러 실행하거나 내 코드로 바꿉니다.
-# 클래스, 파일, 도구 창, 액션 및 설정을 어디서나 검색하려면 ⇧ 두 번을(를) 누릅니다.
+import os
+import sys
+import subprocess
 
+def run_django_server():
+    """Django 서버 실행"""
+    os.chdir('localbriefing')
+    subprocess.run([sys.executable, 'manage.py', 'runserver', '0.0.0.0:8000'])
 
-def print_hi(name):
-    # 스크립트를 디버그하려면 하단 코드 줄의 중단점을 사용합니다.
-    print(f'Hi, {name}')  # 중단점을 전환하려면 ⌘F8을(를) 누릅니다.
+def test_data_sources():
+    """데이터 소스 테스트"""
+    print("=== Method 1: 신설 음식점 테스트 ===")
+    os.chdir('data_sources/method1_recent_restaurants')
+    subprocess.run([sys.executable, 'seoul_all_districts_restaurants.py'])
+    
+    print("\n=== Method 2: 인기 맛집 테스트 ===")
+    os.chdir('../method2_popular_restaurants')
+    subprocess.run([sys.executable, 'realtime_restaurants.py'])
 
-
-# 스크립트를 실행하려면 여백의 녹색 버튼을 누릅니다.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# https://www.jetbrains.com/help/pycharm/에서 PyCharm 도움말 참조
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        if sys.argv[1] == 'server':
+            run_django_server()
+        elif sys.argv[1] == 'test':
+            test_data_sources()
+        else:
+            print("사용법: python main.py [server|test]")
+    else:
+        print("LocalBriefing 프로젝트")
+        print("사용법:")
+        print("  python main.py server  # Django 서버 실행")
+        print("  python main.py test    # 데이터 소스 테스트")

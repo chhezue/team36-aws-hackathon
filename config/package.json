@@ -1,0 +1,16 @@
+{
+  "name": "localbriefing",
+  "version": "1.0.0",
+  "description": "LocalBriefing Django 프로젝트",
+  "scripts": {
+    "lint": "eslint localbriefing/static/js/**/*.js",
+    "lint:fix": "eslint localbriefing/static/js/**/*.js --fix",
+    "format": "prettier --write localbriefing/static/js/**/*.js localbriefing/templates/**/*.html",
+    "format:check": "prettier --check localbriefing/static/js/**/*.js localbriefing/templates/**/*.html"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "prettier": "^3.1.1",
+    "@eslint/js": "^9.0.0"
+  }
+}

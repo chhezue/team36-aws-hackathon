@@ -3,92 +3,265 @@
 {% block title %}LocalBriefing - 설정{% endblock %}
 
 {% block content %}
-<div class="header">
-    <div class="logo">⚙️ 설정</div>
+<div class="settings-header">
+    <div class="settings-logo">⚙️ 설정</div>
+    <div class="settings-subtitle">내 브리핑을 맞춤 설정하세요</div>
 </div>
 
-<div class="settings-section">
-    <div class="settings-title">👤 계정 정보</div>
-    <div class="settings-item">
-        <div>
-            <div>이메일: user@example.com</div>
-            <div style="font-size: 14px; color: var(--text-secondary);">가입일: 2024.03.01</div>
+<form id="settingsForm" method="post">
+    {% csrf_token %}
+    
+    <div class="settings-bento">
+        <!-- Account Section -->
+        <div class="settings-card account-card">
+            <div class="glass-card">
+                <div class="card-header-minimal">
+                    <span class="clay-icon">👤</span>
+                    <span class="card-title-bold">계정 정보</span>
+                </div>
+                <div class="account-info">
+                    <div class="info-item">
+                        <span class="info-label">이메일</span>
+                        <span class="info-value">{{ user_email|default:'user@example.com' }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">가입일</span>
+                        <span class="info-value">2024.03.01</span>
+                    </div>
+                    <button type="button" class="clay-btn secondary small">비밀번호 변경</button>
+                </div>
+            </div>
         </div>
-        <button class="btn btn-secondary" style="width: auto; padding: 8px 16px;">비밀번호 변경</button>
-    </div>
-</div>
 
-<div class="settings-section">
-    <div class="settings-title">📍 거주지 설정</div>
-    <div class="settings-item">
-        <div>
-            <div>현재: 강남구 역삼동</div>
+        <!-- Location Section -->
+        <div class="settings-card location-card">
+            <div class="glass-card">
+                <div class="card-header-minimal">
+                    <span class="clay-icon">📍</span>
+                    <span class="card-title-bold">거주지</span>
+                </div>
+                <div class="location-display">
+                    <div class="current-location">
+                        <span class="location-text">{{ district|default:'강남구' }}</span>
+                    </div>
+                    <button type="button" class="clay-btn primary small" onclick="openLocationModal()">변경</button>
+                </div>
+            </div>
         </div>
-        <button class="btn btn-secondary" style="width: auto; padding: 8px 16px;">위치 변경</button>
+
+        <!-- Categories Section -->
+        <div class="settings-card categories-card">
+            <div class="glass-card">
+                <div class="card-header-minimal">
+                    <span class="clay-icon">📋</span>
+                    <span class="card-title-bold">브리핑 카테고리</span>
+                </div>
+                <div class="categories-grid">
+                    <div class="category-toggle">
+                        <div class="toggle-info">
+                            <span class="toggle-icon">☀️</span>
+                            <span class="toggle-label">날씨 정보</span>
+                        </div>
+                        <div class="toggle-switch {% if categories.weather %}active{% endif %}" onclick="toggleSwitch(this)" data-name="weather"></div>
+                    </div>
+                    <div class="category-toggle">
+                        <div class="toggle-info">
+                            <span class="toggle-icon">📢</span>
+                            <span class="toggle-label">구청 소식</span>
+                        </div>
+                        <div class="toggle-switch {% if categories.district_news %}active{% endif %}" onclick="toggleSwitch(this)" data-name="district_news"></div>
+                    </div>
+                    <div class="category-toggle">
+                        <div class="toggle-info">
+                            <span class="toggle-icon">💬</span>
+                            <span class="toggle-label">동네 이슈</span>
+                        </div>
+                        <div class="toggle-switch {% if categories.community %}active{% endif %}" onclick="toggleSwitch(this)" data-name="community"></div>
+                    </div>
+                    <div class="category-toggle">
+                        <div class="toggle-info">
+                            <span class="toggle-icon">🍽️</span>
+                            <span class="toggle-label">맛집 정보</span>
+                        </div>
+                        <div class="toggle-switch {% if categories.restaurants %}active{% endif %}" onclick="toggleSwitch(this)" data-name="restaurants"></div>
+                    </div>
+                    <div class="category-toggle">
+                        <div class="toggle-info">
+                            <span class="toggle-icon">🆕</span>
+                            <span class="toggle-label">신장 개업 음식점</span>
+                        </div>
+                        <div class="toggle-switch {% if categories.new_restaurants %}active{% endif %}" onclick="toggleSwitch(this)" data-name="new_restaurants"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notifications Section -->
+        <div class="settings-card notifications-card">
+            <div class="glass-card">
+                <div class="card-header-minimal">
+                    <span class="clay-icon">🔔</span>
+                    <span class="card-title-bold">알림 설정</span>
+                </div>
+                <div class="notification-settings">
+                    <div class="time-selector">
+                        <span class="setting-label">브리핑 시간</span>
+                        <select name="notification_time" class="form-select modern compact">
+                            <option value="06:00" {% if notification_time == '06:00' %}selected{% endif %}>오전 6:00</option>
+                            <option value="07:00" {% if notification_time == '07:00' or not notification_time %}selected{% endif %}>오전 7:00</option>
+                            <option value="08:00" {% if notification_time == '08:00' %}selected{% endif %}>오전 8:00</option>
+                            <option value="09:00" {% if notification_time == '09:00' %}selected{% endif %}>오전 9:00</option>
+                            <option value="10:00" {% if notification_time == '10:00' %}selected{% endif %}>오전 10:00</option>
+                        </select>
+                    </div>
+                    <div class="category-toggle">
+                        <div class="toggle-info">
+                            <span class="toggle-icon">🎅</span>
+                            <span class="toggle-label">주말 알림</span>
+                        </div>
+                        <div class="toggle-switch {% if weekend_notifications %}active{% endif %}" onclick="toggleSwitch(this)" data-name="weekend_notifications"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Other Settings -->
+        <div class="settings-card other-card">
+            <div class="glass-card">
+                <div class="card-header-minimal">
+                    <span class="clay-icon">ℹ️</span>
+                    <span class="card-title-bold">기타</span>
+                </div>
+                <div class="other-options">
+                    <div class="option-item">
+                        <span class="option-text">이용약관</span>
+                        <span class="option-arrow">›</span>
+                    </div>
+                    <div class="option-item">
+                        <span class="option-text">개인정보처리방침</span>
+                        <span class="option-arrow">›</span>
+                    </div>
+                    <div class="option-item">
+                        <span class="option-text">문의하기</span>
+                        <span class="option-arrow">›</span>
+                    </div>
+                    <div class="option-item logout">
+                        <span class="option-text">로그아웃</span>
+                        <span class="option-arrow">›</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="settings-actions">
+        <button type="submit" class="clay-btn primary large">
+            <span class="btn-icon">💾</span>
+            <span>설정 저장</span>
+        </button>
+        <button type="button" class="clay-btn secondary large" onclick="location.href='/briefing/'">
+            <span class="btn-icon">←</span>
+            <span>브리핑으로</span>
+        </button>
+    </div>
+</form>
+
+<!-- 위치 변경 모달 -->
+<div id="locationModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>📍 거주지 변경</h3>
+            <span class="close" onclick="closeLocationModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>구 선택</label>
+                <select id="districtSelect">
+                    <option value="">구를 선택하세요</option>
+                </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeLocationModal()">취소</button>
+            <button type="button" class="btn btn-primary" onclick="saveLocation()">저장</button>
+        </div>
     </div>
 </div>
 
-<div class="settings-section">
-    <div class="settings-title">📋 브리핑 설정</div>
-    <div class="settings-item">
-        <div>☀️ 날씨 정보</div>
-        <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
-    </div>
-    <div class="settings-item">
-        <div>📢 구청 공지사항</div>
-        <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
-    </div>
-    <div class="settings-item">
-        <div>💬 커뮤니티 이슈</div>
-        <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
-    </div>
-    <div class="settings-item">
-        <div>🥕 중고거래</div>
-        <div class="toggle-switch" onclick="toggleSwitch(this)"></div>
-    </div>
-    <div class="settings-item">
-        <div>🍽️ 맛집 정보</div>
-        <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
-    </div>
-</div>
+<script>
+// 토글 스위치 기능
+function toggleSwitch(element) {
+    element.classList.toggle('active');
+}
 
-<div class="settings-section">
-    <div class="settings-title">🔔 알림 설정</div>
-    <div class="settings-item">
-        <div>브리핑 알림 시간</div>
-        <select class="form-select" style="width: 120px;">
-            <option value="07:00" selected>오전 7:00</option>
-            <option value="08:00">오전 8:00</option>
-            <option value="09:00">오전 9:00</option>
-        </select>
-    </div>
-    <div class="settings-item">
-        <div>주말 알림</div>
-        <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
-    </div>
-</div>
+// 위치 변경 모달
+function openLocationModal() {
+    document.getElementById('locationModal').style.display = 'block';
+    loadDistricts();
+}
 
-<div class="settings-section">
-    <div class="settings-title">ℹ️ 기타</div>
-    <div class="settings-item">
-        <div>이용약관</div>
-        <span style="color: var(--text-secondary);">></span>
-    </div>
-    <div class="settings-item">
-        <div>개인정보처리방침</div>
-        <span style="color: var(--text-secondary);">></span>
-    </div>
-    <div class="settings-item">
-        <div>문의하기</div>
-        <span style="color: var(--text-secondary);">></span>
-    </div>
-    <div class="settings-item">
-        <div style="color: var(--error);">로그아웃</div>
-        <span style="color: var(--text-secondary);">></span>
-    </div>
-</div>
+function closeLocationModal() {
+    document.getElementById('locationModal').style.display = 'none';
+}
 
-<div class="nav-buttons">
-    <button class="btn btn-primary" onclick="location.href='/briefing/'">브리핑으로 돌아가기</button>
-</div>
+// 구 목록 로드
+function loadDistricts() {
+    fetch('/api/districts/')
+        .then(response => response.json())
+        .then(data => {
+            const select = document.getElementById('districtSelect');
+            select.innerHTML = '<option value="">구를 선택하세요</option>';
+            data.districts.forEach(district => {
+                select.innerHTML += `<option value="${district}">${district}</option>`;
+            });
+        });
+}
+
+
+
+// 위치 저장
+function saveLocation() {
+    const district = document.getElementById('districtSelect').value;
+    
+    if (!district) {
+        alert('구를 선택해주세요.');
+        return;
+    }
+    
+    // 폼에 숨겨진 필드 추가
+    const form = document.getElementById('settingsForm');
+    
+    let districtInput = document.querySelector('input[name="district"]');
+    if (!districtInput) {
+        districtInput = document.createElement('input');
+        districtInput.type = 'hidden';
+        districtInput.name = 'district';
+        form.appendChild(districtInput);
+    }
+    districtInput.value = district;
+    
+    closeLocationModal();
+    
+    // 화면에 즉시 반영
+    document.querySelector('.location-text').textContent = district;
+}
+
+// 폼 제출 시 토글 상태 처리
+document.getElementById('settingsForm').addEventListener('submit', function(e) {
+    // 기존 숨겨진 입력 필드 제거
+    const existingInputs = this.querySelectorAll('input[type="hidden"][data-toggle]');
+    existingInputs.forEach(input => input.remove());
+    
+    // 토글 스위치 상태를 숨겨진 입력 필드로 추가
+    const toggles = document.querySelectorAll('.toggle-switch[data-name]');
+    toggles.forEach(toggle => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = toggle.dataset.name;
+        input.value = toggle.classList.contains('active') ? 'on' : 'off';
+        input.setAttribute('data-toggle', 'true');
+        this.appendChild(input);
+    });
+});
+</script>
 {% endblock %}

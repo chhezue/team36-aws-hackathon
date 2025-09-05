@@ -1,0 +1,72 @@
+[
+  {
+    "name": "밍글스",
+    "address": "서울 강남구 청담동 94-6",
+    "road_address": "서울 강남구 도산대로67길 19",
+    "phone": "02-515-7306",
+    "category": "음식점 > 한식",
+    "x": "127.04416060872083",
+    "y": "37.52537011726149",
+    "place_url": "http://place.map.kakao.com/24073852",
+    "kakao_id": "24073852",
+    "source": "kakao",
+    "search_query": "강남구 맛집 추천",
+    "district": "강남구"
+  },
+  {
+    "name": "지아니스나폴리 역삼점",
+    "address": "서울 강남구 역삼동 669-18",
+    "road_address": "서울 강남구 논현로94길 15",
+    "phone": "02-566-0501",
+    "category": "음식점 > 양식 > 이탈리안",
+    "x": "127.037556138412",
+    "y": "37.5026707070231",
+    "place_url": "http://place.map.kakao.com/12026995",
+    "kakao_id": "12026995",
+    "source": "kakao",
+    "search_query": "강남구 맛집 추천",
+    "district": "강남구"
+  },
+  {
+    "name": "새로도원",
+    "address": "서울 강남구 신사동 657-28",
+    "road_address": "서울 강남구 도산대로51길 44",
+    "phone": "",
+    "category": "음식점 > 술집 > 호프,요리주점",
+    "x": "127.038386878005",
+    "y": "37.5259893214478",
+    "place_url": "http://place.map.kakao.com/68952262",
+    "kakao_id": "68952262",
+    "source": "kakao",
+    "search_query": "강남구 새로 오픈",
+    "district": "강남구"
+  },
+  {
+    "name": "라홍방마라탕 강남직영점",
+    "address": "서울 강남구 역삼동 619-2",
+    "road_address": "서울 강남구 강남대로102길 20",
+    "phone": "02-558-1231",
+    "category": "음식점 > 중식 > 중국요리 > 라홍방마라탕",
+    "x": "127.027306311477",
+    "y": "37.5022590583583",
+    "place_url": "http://place.map.kakao.com/1165058348",
+    "kakao_id": "1165058348",
+    "source": "kakao",
+    "search_query": "강남구 새로 오픈",
+    "district": "강남구"
+  },
+  {
+    "name": "동명닭집 논현직영점",
+    "address": "서울 강남구 논현동 184",
+    "road_address": "서울 강남구 강남대로116길 8",
+    "phone": "0507-1379-8938",
+    "category": "음식점 > 한식 > 육류,고기 > 닭요리",
+    "x": "127.024750546305",
+    "y": "37.5061006077898",
+    "place_url": "http://place.map.kakao.com/1550251343",
+    "kakao_id": "1550251343",
+    "source": "kakao",
+    "search_query": "강남구 핫플레이스",
+    "district": "강남구"
+  }
+]

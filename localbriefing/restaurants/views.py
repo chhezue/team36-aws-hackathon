@@ -3,7 +3,8 @@ import os
 import json
 from pathlib import Path
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '../../data_sources'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
+from load_env import get_env
 
 def get_restaurant_data(district='강남구'):
     """실제 API 호출하여 음식점 데이터 수집"""
@@ -18,7 +19,7 @@ def get_restaurant_data(district='강남구'):
     # Method 1: 신설 음식점 (서울시 API)
     try:
         logger.info("Method 1: 서울시 API 호출...")
-        from method1_recent_restaurants.seoul_all_districts_restaurants import SeoulAllDistrictsRestaurants
+        from data_sources.method1_recent_restaurants.seoul_all_districts_restaurants import SeoulAllDistrictsRestaurants
         recent_collector = SeoulAllDistrictsRestaurants()
         recent_results = recent_collector.get_restaurants_by_districts([district])
         new_restaurants = recent_results.get(district, [])[:3]
@@ -29,7 +30,7 @@ def get_restaurant_data(district='강남구'):
     # Method 2: 인기 맛집 (카카오 API)
     try:
         logger.info("Method 2: 카카오 API 호출...")
-        from method2_popular_restaurants.realtime_restaurants import RealtimeRestaurantAPI
+        from data_sources.method2_popular_restaurants.realtime_restaurants import RealtimeRestaurantAPI
         popular_collector = RealtimeRestaurantAPI()
         popular_restaurants = popular_collector.get_all_new_restaurants(district)[:3]
         logger.info(f"Method 2 성공: {len(popular_restaurants)}개 인기 맛집")

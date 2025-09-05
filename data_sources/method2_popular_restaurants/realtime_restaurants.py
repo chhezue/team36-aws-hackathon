@@ -3,12 +3,11 @@ import json
 from datetime import datetime, timedelta
 import os
 import sys
-sys.path.append('..')
-from load_env import load_env_file, get_api_key
+sys.path.append('../..')
+from load_env import get_env
 
 class RealtimeRestaurantAPI:
     def __init__(self):
-        load_env_file()
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         }
@@ -45,7 +44,7 @@ class RealtimeRestaurantAPI:
     def get_kakao_places(self, district='강남구', page=1):
         """카카오 로컬 API - 지역별 인기 음식점"""
         try:
-            kakao_key = get_api_key('KAKAO_API_KEY')
+            kakao_key = get_env('KAKAO_API_KEY')
             print(f"카카오 API 키: {kakao_key[:10]}...")
             url = "https://dapi.kakao.com/v2/local/search/keyword.json"
             
@@ -119,8 +118,8 @@ class RealtimeRestaurantAPI:
     def get_naver_places(self):
         """네이버 검색 API - 최근 음식점"""
         try:
-            naver_client_id = get_api_key('NAVER_CLIENT_ID')
-            naver_client_secret = get_api_key('NAVER_CLIENT_SECRET')
+            naver_client_id = get_env('NAVER_CLIENT_ID')
+            naver_client_secret = get_env('NAVER_CLIENT_SECRET')
             
             url = "https://openapi.naver.com/v1/search/local.json"
             

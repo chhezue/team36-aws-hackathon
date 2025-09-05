@@ -4,6 +4,10 @@ import json
 import re
 from datetime import datetime
 from urllib.parse import quote
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
+from load_env import get_env
 
 class LocalIssueCrawler:
     def __init__(self):

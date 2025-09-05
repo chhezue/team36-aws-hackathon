@@ -3,13 +3,12 @@ import os
 from datetime import datetime
 import json
 import sys
-sys.path.append('..')
-from load_env import load_env_file, get_api_key
+sys.path.append('../..')
+from load_env import get_env
 
 class SeoulAllDistrictsRestaurants:
     def __init__(self):
-        load_env_file('../.env')
-        self.api_key = get_api_key('SEOUL_API_KEY')
+        self.api_key = get_env('SEOUL_API_KEY')
         if not self.api_key or self.api_key == 'sample_key':
             raise ValueError("SEOUL_API_KEY 환경변수가 설정되지 않았습니다.")
 

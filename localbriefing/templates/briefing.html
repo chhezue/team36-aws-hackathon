@@ -105,7 +105,7 @@
             <div class="restaurant-list">
                 {% if new_restaurants %}
                     {% for restaurant in new_restaurants %}
-                    <div class="restaurant-item" onclick="{% if restaurant.place_url %}window.open('{{ restaurant.place_url }}', '_blank'){% endif %}">
+                    <div class="restaurant-item" onclick="window.open('https://map.naver.com/v5/search/{{ restaurant.address|urlencode }}', '_blank')">
                         <div class="restaurant-info">
                             <div class="restaurant-name">{{ restaurant.name }}</div>
                             <div class="restaurant-category">{{ restaurant.category|default:"음식점" }}</div>

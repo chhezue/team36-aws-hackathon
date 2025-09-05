@@ -182,5 +182,11 @@ def briefing_view(request):
         }
     }
     
+    print(f"템플릿 전달 데이터: 신장 {len(new_restaurants)}개, 인기 {len(popular_restaurants)}개")
+    if new_restaurants:
+        print(f"신장 첫번째: {new_restaurants[0]['name']}")
+    if popular_restaurants:
+        print(f"인기 첫번째: {popular_restaurants[0]['name']}")
+    
     logger.info("브리핑 데이터 준비 완료")
     return render(request, 'briefing.html', briefing_data)

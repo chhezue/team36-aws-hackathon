@@ -26,6 +26,88 @@
 </div>
 
 <div class="bento-grid">
+    <!-- Sentiment Temperature Card -->
+    <div class="bento-item">
+        <div class="app-card">
+            <div class="card-header">
+                <i data-lucide="thermometer" class="card-icon" style="width: 24px; height: 24px; color: var(--warning);"></i>
+                <div>
+                    <h3 class="card-title">우리 구의 감성 온도계</h3>
+                    <p class="card-subtitle">동네 분위기 한눈에</p>
+                </div>
+                <button class="info-button" onclick="showSentimentDetails()">
+                    <i data-lucide="info" style="width: 16px; height: 16px;"></i>
+                </button>
+            </div>
+            <div class="sentiment-display" id="sentimentDisplay">
+                <div class="loading-spinner" style="display: none;"></div>
+                <div class="sentiment-content">
+                    {% if sentiment_summary %}
+                        <div class="mood-emoji">{{ sentiment_summary.mood_emoji }}</div>
+                        <div class="sentiment-text">
+                            <div class="sentiment-score">감성 점수: {{ sentiment_summary.sentiment_score|floatformat:1 }}</div>
+                            <div class="sentiment-description">
+                                긍정 {{ sentiment_summary.positive_count }}개 | 부정 {{ sentiment_summary.negative_count }}개
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="mood-emoji">☁️</div>
+                        <div class="sentiment-text">
+                            <div class="sentiment-score">데이터 로딩 중...</div>
+                            <div class="sentiment-description">잠시만 기다려주세요</div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Impact Content Card -->
+    <div class="bento-item">
+        <div class="app-card">
+            <div class="card-header">
+                <i data-lucide="trending-up" class="card-icon" style="width: 24px; height: 24px; color: var(--error);"></i>
+                <div>
+                    <h3 class="card-title">감성 온도 영향 TOP 5</h3>
+                    <p class="card-subtitle">동네 분위기에 가장 영향을 준 소식</p>
+                </div>
+            </div>
+            <div class="impact-content-list">
+                {% if top_impact_content %}
+                    {% for item in top_impact_content %}
+                    <div class="impact-item {{ item.sentiment }}" onclick="window.open('{{ item.url }}', '_blank')">
+                        <div class="impact-content">
+                            <div class="impact-source">
+                                {% if item.source_type == 'youtube' %}
+                                    <i data-lucide="play-circle" style="width: 14px; height: 14px; color: #FF0000;"></i>
+                                    <span>유튜브</span>
+                                {% elif item.source_type == 'naver_news' %}
+                                    <i data-lucide="newspaper" style="width: 14px; height: 14px; color: #03C75A;"></i>
+                                    <span>네이버 뉴스</span>
+                                {% endif %}
+                            </div>
+                            <div class="impact-title">{{ item.title|truncatechars:60 }}</div>
+                            <div class="impact-meta">
+                                <span class="sentiment-badge {{ item.sentiment }}">
+                                    {% if item.sentiment == 'positive' %}긍정{% elif item.sentiment == 'negative' %}부정{% else %}중립{% endif %}
+                                </span>
+                                <span class="impact-score">영향도: {{ item.impact_score|floatformat:0 }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="impact-item">
+                        <div style="display: flex; align-items: center; color: var(--text-secondary);">
+                            <i data-lucide="info" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+                            아직 분석된 데이터가 없습니다
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
     <!-- Weather Card -->
     <div class="bento-item">
         <div class="app-card">
@@ -38,7 +120,6 @@
             <div class="weather-display">
                 <div class="weather-main-temp">{{ weather.temp }}</div>
                 <div class="weather-condition">{{ weather.condition }}</div>
-
                 <div class="weather-dust">미세먼지 {{ weather.dust }}</div>
                 
                 {% if weather.hourly_forecast %}
@@ -74,25 +155,15 @@
                     {% for issue in local_issues.youtube %}
                     <div class="issue-item" onclick="window.open('{{ issue.url }}', '_blank')">
                         <div class="issue-content">
-                            <i data-lucide="play-circle" class="issue-icon"></i>
-                            <span class="issue-title">{{ issue.title }}</span>
+                            <i data-lucide="play-circle" class="issue-icon" style="color: #FF0000;"></i>
+                            <span class="issue-title">{{ issue.title|truncatechars:50 }}</span>
                         </div>
                         {% if issue.view_count > 0 %}
                         <span class="view-count">
                             <i data-lucide="eye" style="width: 10px; height: 10px; margin-right: 2px;"></i>
-                            {{ issue.view_count|format_view_count }}
+                            {{ issue.view_count }}
                         </span>
                         {% endif %}
-                    </div>
-                    {% endfor %}
-                {% endif %}
-                {% if local_issues.naver_search %}
-                    {% for issue in local_issues.naver_search %}
-                    <div class="issue-item" onclick="window.open('{{ issue.url }}', '_blank')">
-                        <div class="issue-content">
-                            <i data-lucide="search" class="issue-icon"></i>
-                            <span class="issue-title">{{ issue.title }}</span>
-                        </div>
                     </div>
                     {% endfor %}
                 {% endif %}
@@ -100,23 +171,17 @@
                     {% for issue in local_issues.naver_news %}
                     <div class="issue-item" onclick="window.open('{{ issue.url }}', '_blank')">
                         <div class="issue-content">
-                            <i data-lucide="newspaper" class="issue-icon"></i>
-                            <span class="issue-title">{{ issue.title }}</span>
+                            <i data-lucide="newspaper" class="issue-icon" style="color: #03C75A;"></i>
+                            <span class="issue-title">{{ issue.title|truncatechars:50 }}</span>
                         </div>
                     </div>
                     {% endfor %}
                 {% endif %}
-                {% if not local_issues.youtube and not local_issues.naver_search and not local_issues.naver_news %}
+                {% if not local_issues.youtube and not local_issues.naver_news %}
                     <div class="issue-item">
-                        <div style="display: flex; align-items: center;">
-                            <i data-lucide="construction" style="width: 16px; height: 16px; margin-right: 8px; color: var(--warning);"></i>
-                            역삼역 근처 공사로 교통 혼잡
-                        </div>
-                    </div>
-                    <div class="issue-item">
-                        <div style="display: flex; align-items: center;">
-                            <i data-lucide="coffee" style="width: 16px; height: 16px; margin-right: 8px; color: var(--success);"></i>
-                            새로 생긴 카페 후기 좋음
+                        <div style="display: flex; align-items: center; color: var(--text-secondary);">
+                            <i data-lucide="info" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+                            아직 수집된 동네 이슈가 없습니다
                         </div>
                     </div>
                 {% endif %}
@@ -221,11 +286,367 @@
     </div>
 </div>
 
+<!-- Sentiment Details Modal -->
+<div id="sentimentModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>감성 온도에 영향을 준 소식들</h3>
+            <button class="close-button" onclick="closeSentimentModal()">
+                <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+            </button>
+        </div>
+        <div class="modal-body" id="sentimentDetails">
+            <div class="loading-spinner"></div>
+        </div>
+    </div>
+</div>
+
+<style>
+.sentiment-display {
+    display: flex;
+    align-items: center;
+    padding: 15px 0;
+}
+
+.sentiment-content {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.mood-emoji {
+    font-size: 48px;
+    margin-right: 15px;
+}
+
+.sentiment-text {
+    flex: 1;
+}
+
+.sentiment-score {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.sentiment-description {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.info-button {
+    background: none;
+    border: none;
+    padding: 8px;
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+}
+
+.info-button:hover {
+    background: var(--background-secondary);
+    color: var(--primary);
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 15px;
+    max-width: 90%;
+    max-height: 80%;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: var(--text-primary);
+}
+
+.close-button {
+    background: none;
+    border: none;
+    padding: 8px;
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--text-secondary);
+}
+
+.close-button:hover {
+    background: var(--background-secondary);
+}
+
+.modal-body {
+    padding: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.sentiment-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 10px;
+    background: var(--background-secondary);
+}
+
+.sentiment-item.positive {
+    border-left: 4px solid var(--success);
+}
+
+.sentiment-item.negative {
+    border-left: 4px solid var(--error);
+}
+
+.sentiment-item.neutral {
+    border-left: 4px solid var(--text-secondary);
+}
+
+.sentiment-item-content {
+    flex: 1;
+}
+
+.sentiment-item-title {
+    font-weight: 500;
+    margin-bottom: 4px;
+    color: var(--text-primary);
+}
+
+.sentiment-item-source {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.sentiment-impact {
+    text-align: right;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.sentiment-impact.positive {
+    color: var(--success);
+}
+
+.sentiment-impact.negative {
+    color: var(--error);
+}
+
+.sentiment-impact.neutral {
+    color: var(--text-secondary);
+}
+
+/* Top Impact Content Styles */
+.impact-content-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.impact-item {
+    padding: 12px;
+    border-radius: 12px;
+    background: var(--bg-tertiary);
+    border-left: 4px solid var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.impact-item:hover {
+    background: var(--bg-secondary);
+    transform: translateY(-1px);
+}
+
+.impact-item.positive {
+    border-left-color: var(--success);
+}
+
+.impact-item.negative {
+    border-left-color: var(--error);
+}
+
+.impact-content {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.impact-source {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.impact-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.4;
+}
+
+.impact-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+}
+
+.sentiment-badge {
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.sentiment-badge.positive {
+    background: rgba(126, 211, 33, 0.1);
+    color: var(--success);
+}
+
+.sentiment-badge.negative {
+    background: rgba(208, 2, 27, 0.1);
+    color: var(--error);
+}
+
+.sentiment-badge.neutral {
+    background: rgba(102, 102, 102, 0.1);
+    color: var(--text-secondary);
+}
+
+.impact-score {
+    color: var(--text-tertiary);
+    font-weight: 500;
+}
+</style>
+
 <script>
-// Initialize icons after DOM content is loaded
+let currentLocationId = 1; // 강남구 기본값
+
+// 페이지 로드 시 감성 데이터 로드
 document.addEventListener('DOMContentLoaded', function() {
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();
+    }
+    loadSentimentData();
+});
+
+async function loadSentimentData() {
+    try {
+        const response = await fetch(`/users/api/sentiment/${currentLocationId}/`);
+        const data = await response.json();
+        
+        if (data.summaries && data.summaries.length > 0) {
+            const todaySummary = data.summaries[data.summaries.length - 1];
+            updateSentimentDisplay(todaySummary);
+        }
+    } catch (error) {
+        console.error('감성 데이터 로드 실패:', error);
+        document.querySelector('.sentiment-score').textContent = '데이터 없음';
+        document.querySelector('.sentiment-description').textContent = '감성 분석 데이터를 불러올 수 없습니다';
+    }
+}
+
+function updateSentimentDisplay(summary) {
+    const moodEmoji = document.querySelector('.mood-emoji');
+    const sentimentScore = document.querySelector('.sentiment-score');
+    const sentimentDescription = document.querySelector('.sentiment-description');
+    
+    moodEmoji.textContent = summary.mood_emoji;
+    sentimentScore.textContent = `${summary.positive_ratio.toFixed(1)}% 긍정적`;
+    
+    let description = '';
+    if (summary.sentiment_score >= 0.3) {
+        description = '오늘 우리 동네는 밝은 분위기예요!';
+    } else if (summary.sentiment_score >= -0.1) {
+        description = '평온한 하루를 보내고 있어요';
+    } else {
+        description = '조금 침체된 분위기네요';
+    }
+    
+    sentimentDescription.textContent = description;
+}
+
+async function showSentimentDetails() {
+    const modal = document.getElementById('sentimentModal');
+    const detailsContainer = document.getElementById('sentimentDetails');
+    
+    modal.style.display = 'flex';
+    detailsContainer.innerHTML = '<div class="loading-spinner"></div>';
+    
+    try {
+        const response = await fetch(`/users/api/sentiment/${currentLocationId}/details/`);
+        const data = await response.json();
+        
+        let html = '';
+        
+        if (data.details && data.details.length > 0) {
+            data.details.forEach(item => {
+                const impactText = item.sentiment === 'positive' ? `+${item.impact}°` : 
+                                 item.sentiment === 'negative' ? `${item.impact}°` : '0°';
+                
+                html += `
+                    <div class="sentiment-item ${item.sentiment}">
+                        <div class="sentiment-item-content">
+                            <div class="sentiment-item-title">${item.title}</div>
+                            <div class="sentiment-item-source">${item.source}</div>
+                        </div>
+                        <div class="sentiment-impact ${item.sentiment}">
+                            ${impactText}
+                        </div>
+                    </div>
+                `;
+            });
+        } else {
+            html = '<p style="text-align: center; color: var(--text-secondary);">분석된 데이터가 없습니다.</p>';
+        }
+        
+        detailsContainer.innerHTML = html;
+        
+    } catch (error) {
+        console.error('상세 데이터 로드 실패:', error);
+        detailsContainer.innerHTML = '<p style="text-align: center; color: var(--error);">데이터를 불러올 수 없습니다.</p>';
+    }
+    
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+}
+
+function closeSentimentModal() {
+    document.getElementById('sentimentModal').style.display = 'none';
+}
+
+// 모달 외부 클릭 시 닫기
+document.getElementById('sentimentModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeSentimentModal();
     }
 });
 </script>

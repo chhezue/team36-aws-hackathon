@@ -58,6 +58,8 @@ class RawData(models.Model):
     def __str__(self):
         return f"{self.location} - {self.category} - {self.collected_at.date()}"
 
+
+
 class Briefing(models.Model):
     STATUS_CHOICES = [
         ('generating', '생성 중'),
@@ -172,3 +174,73 @@ class LocalIssue(models.Model):
     
     def __str__(self):
         return f"{self.location} - {self.title[:50]}"
+
+class SentimentAnalysis(models.Model):
+    SENTIMENT_CHOICES = [
+        ('positive', '긍정'),
+        ('negative', '부정'),
+        ('neutral', '중립'),
+    ]
+    
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, verbose_name="지역")
+    content_type = models.CharField(max_length=50, verbose_name="콘텐츠 타입")
+    content_id = models.PositiveIntegerField(verbose_name="콘텐츠 ID")
+    sentiment = models.CharField(max_length=10, choices=SENTIMENT_CHOICES, verbose_name="감성")
+    confidence = models.FloatField(verbose_name="신뢰도")
+    keywords = models.JSONField(default=list, verbose_name="키워드")
+    analyzed_at = models.DateTimeField(auto_now_add=True, verbose_name="분석일시")
+    
+    class Meta:
+        db_table = 'sentiment_analysis'
+        indexes = [
+            models.Index(fields=['location', 'sentiment', 'analyzed_at']),
+            models.Index(fields=['content_type', 'content_id']),
+        ]
+        unique_together = ['content_type', 'content_id']
+        verbose_name = "감성 분석"
+        verbose_name_plural = "감성 분석들"
+    
+    def __str__(self):
+        return f"{self.location} - {self.get_sentiment_display()} ({self.confidence:.2f})"
+
+class SentimentSummary(models.Model):
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, verbose_name="지역")
+    date = models.DateField(verbose_name="날짜")
+    positive_count = models.IntegerField(default=0, verbose_name="긍정 개수")
+    negative_count = models.IntegerField(default=0, verbose_name="부정 개수")
+    neutral_count = models.IntegerField(default=0, verbose_name="중립 개수")
+    sentiment_score = models.FloatField(default=0.0, verbose_name="감성 점수")
+    top_keywords = models.JSONField(default=dict, verbose_name="주요 키워드")
+    
+    class Meta:
+        db_table = 'sentiment_summary'
+        unique_together = ['location', 'date']
+        indexes = [
+            models.Index(fields=['location', 'date']),
+        ]
+        verbose_name = "감성 요약"
+        verbose_name_plural = "감성 요약들"
+    
+    def __str__(self):
+        return f"{self.location} - {self.date} (점수: {self.sentiment_score:.2f})"
+    
+    @property
+    def total_count(self):
+        return self.positive_count + self.negative_count + self.neutral_count
+    
+    @property
+    def positive_ratio(self):
+        return (self.positive_count / self.total_count * 100) if self.total_count > 0 else 0
+    
+    @property
+    def negative_ratio(self):
+        return (self.negative_count / self.total_count * 100) if self.total_count > 0 else 0
+    
+    @property
+    def mood_emoji(self):
+        if self.sentiment_score >= 0.3:
+            return "☀️"
+        elif self.sentiment_score >= -0.1:
+            return "☁️"
+        else:
+            return "☔"

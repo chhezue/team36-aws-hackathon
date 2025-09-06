@@ -92,9 +92,11 @@ export default function BriefingPage() {
   const fetchBriefingData = useCallback(async () => {
     try {
       setLoading(true)
-      const [briefingResponse, weatherResponse] = await Promise.all([
+      const [briefingResponse, weatherResponse, sentimentResponse, restaurantResponse] = await Promise.all([
         api.getBriefing(selectedDistrict),
-        api.getWeather(selectedDistrict)
+        api.getWeather(selectedDistrict),
+        api.getSentimentSummary(selectedDistrict),
+        api.getRestaurants(selectedDistrict)
       ])
       
       console.log('=== Lambda API 응답 디버깅 ===');
@@ -105,7 +107,26 @@ export default function BriefingPage() {
       
       // Lambda API 응답 구조에 맞게 수정
       if (briefingResponse.success || briefingResponse.data) {
-        setBriefingData(briefingResponse.data || briefingResponse)
+        const briefing = briefingResponse.data || briefingResponse
+        
+        // 감성 데이터 병합
+        if (sentimentResponse.success || sentimentResponse.data) {
+          const sentimentData = sentimentResponse.data || sentimentResponse
+          briefing.sentiment = {
+            ...briefing.sentiment,
+            ...sentimentData
+          }
+        }
+        
+        // 음식점 데이터 병합
+        if (restaurantResponse.success || restaurantResponse.data) {
+          const restaurantData = restaurantResponse.data || restaurantResponse
+          if (!briefing.categories) briefing.categories = {}
+          briefing.categories.restaurants = restaurantData.restaurants || []
+          briefing.categories.new_restaurants = restaurantData.new_restaurants || []
+        }
+        
+        setBriefingData(briefing)
       } else {
         console.error('브리핑 데이터 오류:', briefingResponse.error)
       }

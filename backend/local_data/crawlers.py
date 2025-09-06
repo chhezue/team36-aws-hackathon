@@ -11,15 +11,29 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 class LocalIssueCrawler:
     def __init__(self):
         self.headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept-Language': 'ko-KR,ko;q=0.8,en-US;q=0.5,en;q=0.3',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1'
         }
         self.session = requests.Session()
         self.session.headers.update(self.headers)
-        # 연결 풀 설정으로 속도 향상
+        
+        # 재시도 전략 개선
+        from urllib3.util.retry import Retry
+        retry_strategy = Retry(
+            total=3,
+            backoff_factor=1,
+            status_forcelist=[429, 500, 502, 503, 504],
+            allowed_methods=["HEAD", "GET", "OPTIONS"]
+        )
+        
         adapter = requests.adapters.HTTPAdapter(
-            pool_connections=20,
-            pool_maxsize=20,
-            max_retries=1
+            pool_connections=10,
+            pool_maxsize=10,
+            max_retries=retry_strategy
         )
         self.session.mount('http://', adapter)
         self.session.mount('https://', adapter)
@@ -267,64 +281,90 @@ class LocalIssueCrawler:
 
     
     def crawl_naver_news_fast(self, query, limit=5):
-        """고속 네이버 뉴스 크롤링"""
+        """고속 네이버 뉴스 크롤링 (timeout 개선)"""
         results = []
         
-        try:
-            news_url = f"https://search.naver.com/search.naver?where=news&query={quote(query)}&sort=1"
-            response = self.session.get(news_url, timeout=3)
-            
-            if response.status_code == 200:
-                soup = BeautifulSoup(response.text, 'lxml')
-                news_items = soup.select('.list_news .bx')[:limit]
+        for attempt in range(3):  # 최대 3회 재시도
+            try:
+                news_url = f"https://search.naver.com/search.naver?where=news&query={quote(query)}&sort=1"
+                response = self.session.get(
+                    news_url, 
+                    timeout=(10, 30),  # (연결 timeout, 읽기 timeout)
+                    allow_redirects=True
+                )
                 
-                for item in news_items:
-                    title_elem = item.select_one('.news_tit')
-                    if title_elem:
-                        results.append({
-                            'source': 'naver_news',
-                            'title': title_elem.get_text(strip=True),
-                            'url': title_elem.get('href', ''),
-                            'view_count': 0,
-                            'published_at': datetime.now() - timedelta(hours=1)
-                        })
-        except Exception:
-            pass
+                if response.status_code == 200:
+                    soup = BeautifulSoup(response.text, 'lxml')
+                    news_items = soup.select('.list_news .bx')[:limit]
+                    
+                    for item in news_items:
+                        title_elem = item.select_one('.news_tit')
+                        if title_elem:
+                            results.append({
+                                'source': 'naver_news',
+                                'title': title_elem.get_text(strip=True),
+                                'url': title_elem.get('href', ''),
+                                'view_count': 0,
+                                'published_at': datetime.now() - timedelta(hours=1)
+                            })
+                    break  # 성공하면 루프 종료
+                    
+            except requests.exceptions.Timeout:
+                print(f"네이버 뉴스 timeout (시도 {attempt + 1}/3): {query}")
+                if attempt < 2:  # 마지막 시도가 아니면 대기
+                    import time
+                    time.sleep(2 ** attempt)  # 지수 백오프
+            except Exception as e:
+                print(f"네이버 뉴스 크롤링 오류: {e}")
+                break
         
         return results
     
     def crawl_youtube_fast(self, query, limit=3):
-        """고속 YouTube 크롤링 (조회수 포함)"""
+        """고속 YouTube 크롤링 (timeout 개선)"""
         results = []
         
-        try:
-            search_url = f"https://www.youtube.com/results?search_query={quote(query)}"
-            response = self.session.get(search_url, timeout=3)
-            
-            if response.status_code == 200:
-                # 정규식으로 빠른 추출
-                video_ids = re.findall(r'"videoId":"([^"]+)"', response.text)[:limit]
-                titles = re.findall(r'"title":{"runs":\[{"text":"([^"]+)"', response.text)[:limit]
-                view_counts = re.findall(r'"viewCountText":{"simpleText":"([^"]+)"', response.text)[:limit]
+        for attempt in range(3):  # 최대 3회 재시도
+            try:
+                search_url = f"https://www.youtube.com/results?search_query={quote(query)}"
+                response = self.session.get(
+                    search_url, 
+                    timeout=(15, 45),  # YouTube는 더 긴 timeout 필요
+                    allow_redirects=True
+                )
                 
-                for i, (video_id, title) in enumerate(zip(video_ids, titles)):
-                    if i >= limit:
-                        break
+                if response.status_code == 200:
+                    # 정규식으로 빠른 추출
+                    video_ids = re.findall(r'"videoId":"([^"]+)"', response.text)[:limit]
+                    titles = re.findall(r'"title":{"runs":\[{"text":"([^"]+)"', response.text)[:limit]
+                    view_counts = re.findall(r'"viewCountText":{"simpleText":"([^"]+)"', response.text)[:limit]
                     
-                    # 조회수 추출
-                    view_count = 0
-                    if i < len(view_counts):
-                        view_count = self._parse_view_count(view_counts[i])
+                    for i, (video_id, title) in enumerate(zip(video_ids, titles)):
+                        if i >= limit:
+                            break
+                        
+                        # 조회수 추출
+                        view_count = 0
+                        if i < len(view_counts):
+                            view_count = self._parse_view_count(view_counts[i])
+                        
+                        results.append({
+                            'source': 'youtube',
+                            'title': title.replace('\\', ''),
+                            'url': f"https://www.youtube.com/watch?v={video_id}",
+                            'view_count': view_count,
+                            'published_at': datetime.now() - timedelta(hours=2)
+                        })
+                    break  # 성공하면 루프 종료
                     
-                    results.append({
-                        'source': 'youtube',
-                        'title': title.replace('\\', ''),
-                        'url': f"https://www.youtube.com/watch?v={video_id}",
-                        'view_count': view_count,
-                        'published_at': datetime.now() - timedelta(hours=2)
-                    })
-        except Exception:
-            pass
+            except requests.exceptions.Timeout:
+                print(f"YouTube timeout (시도 {attempt + 1}/3): {query}")
+                if attempt < 2:  # 마지막 시도가 아니면 대기
+                    import time
+                    time.sleep(3 ** attempt)  # YouTube는 더 긴 대기
+            except Exception as e:
+                print(f"YouTube 크롤링 오류: {e}")
+                break
         
         return results
     

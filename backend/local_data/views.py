@@ -40,10 +40,7 @@ def briefing_view(request):
         ).order_by('-collected_at')[:5]
     }
     
-    # 구청 공지사항 (최신 3개)
-    district_news = DistrictAnnouncement.objects.filter(
-        location=location
-    ).order_by('-collected_at')[:3]
+
     
     # 음식점 데이터
     restaurant_data = get_restaurant_data(user_district)
@@ -61,7 +58,7 @@ def briefing_view(request):
         'sentiment_summary': today_summary,
         'top_impact_content': top_impact_content,
         'local_issues': local_issues,
-        'district_news': district_news,
+
         'new_restaurants': restaurant_data.get('new_restaurants', []),
         'popular_restaurants': restaurant_data.get('popular_restaurants', [])
     }

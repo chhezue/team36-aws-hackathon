@@ -63,13 +63,13 @@ class WeatherService:
                 self.logger.info(f"API 결과: {result}")
                 return result
             else:
-                # API 키가 없는 경우 Mock 데이터 반환
-                self.logger.info("API 키 없음 - Mock 데이터 사용")
-                return self._get_mock_weather_data(gu_name)
+                # API 키가 없는 경우 스켈레톤 데이터 반환
+                self.logger.info("API 키 없음 - 스켈레톤 데이터 사용")
+                return self._get_skeleton_weather_data()
                 
         except Exception as e:
             self.logger.error(f"날씨 API 호출 오류: {e}")
-            return self._get_mock_weather_data(gu_name)
+            return self._get_skeleton_weather_data()
     
     def _call_weather_api(self, nx, ny):
         """기상청 API 호출"""
@@ -238,56 +238,14 @@ class WeatherService:
             
         except Exception as e:
             self.logger.error(f"날씨 데이터 파싱 오류: {e}")
-            return self._get_mock_weather_data()
+            return self._get_skeleton_weather_data()
     
-    def _get_mock_weather_data(self, location='강남구'):
-        """Mock 날씨 데이터 (API 키가 없거나 오류 시 사용)"""
-        import random
-        
-        self.logger.info(f"Mock 날씨 데이터 생성: {location}")
-        
-        # 현재 실제 온도에 가까운 범위로 수정 (여름철 고려)
-        temp_ranges = {
-            '강남구': (28, 33),  # 여름철 실제 온도 반영
-            '강북구': (27, 32),
-            '마포구': (28, 33),
-            '송파구': (28, 33),
-            '서초구': (28, 33),
-            '관악구': (27, 32)
+    def _get_skeleton_weather_data(self):
+        """스켈레톤 날씨 데이터 (오류 시 사용)"""
+        return {
+            'temp': '--°C',
+            'condition': '정보 없음',
+            'dust': '--',
+            'description': '날씨 정보를 불러올 수 없습니다',
+            'hourly_forecast': []
         }
-        
-        temp_range = temp_ranges.get(location, (28, 33))
-        current_temp = random.randint(temp_range[0], temp_range[1])
-        
-        conditions = ['맑음', '구름많음', '흐림']
-        condition = random.choice(conditions)
-        
-        dust_levels = ['좋음', '보통', '나쁨']
-        dust = random.choice(dust_levels)
-        
-        # 시간별 예보 Mock 데이터 생성
-        now = datetime.now()
-        hourly_forecast = []
-        
-        for i in range(1, 4):  # 1시간 후, 2시간 후, 3시간 후
-            future_hour = (now.hour + i) % 24
-            temp_variation = random.randint(-2, 2)
-            forecast_temp = max(temp_range[0], min(temp_range[1], current_temp + temp_variation))
-            forecast_condition = random.choice(conditions)
-            
-            hourly_forecast.append({
-                'time': f"{future_hour:02d}:00",
-                'temp': f'{forecast_temp}°C',
-                'condition': forecast_condition
-            })
-        
-        result = {
-            'temp': f'{current_temp}°C',
-            'condition': condition,
-            'dust': dust,
-            'description': f'{location}의 현재 날씨입니다 (Mock)',
-            'hourly_forecast': hourly_forecast
-        }
-        
-        self.logger.info(f"Mock 데이터 결과: {result}")
-        return result

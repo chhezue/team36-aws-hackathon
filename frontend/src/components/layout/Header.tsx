@@ -27,7 +27,7 @@ export default function Header({
         {showBack && (
           <button 
             onClick={onBack}
-            className="p-2.5 glass-header rounded-lg hover:glass-strong transition-all duration-300 shadow-lg"
+            className="p-3 glass-header rounded-xl hover:scale-110 transition-all duration-300 shadow-lg"
           >
             <IoArrowBack size={20} className="text-white drop-shadow" />
           </button>
@@ -44,7 +44,7 @@ export default function Header({
         {showSentiment && (
           <button 
             onClick={onSentiment}
-            className="p-2.5 glass-header rounded-lg hover:glass-strong transition-all duration-300 shadow-lg"
+            className="p-3 glass-header rounded-xl hover:scale-110 transition-all duration-300 shadow-lg"
             title="동네 분위기 보기"
           >
             <span className="text-lg drop-shadow">🌡️</span>
@@ -53,7 +53,7 @@ export default function Header({
         {showSettings && (
           <button 
             onClick={onSettings}
-            className="p-2.5 glass-header rounded-lg hover:glass-strong transition-all duration-300 shadow-lg"
+            className="p-3 glass-header rounded-xl hover:scale-110 transition-all duration-300 shadow-lg"
             title="설정"
           >
             <IoSettings size={20} className="text-white drop-shadow" />

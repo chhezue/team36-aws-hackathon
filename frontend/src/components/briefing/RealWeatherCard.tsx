@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
-import { FaSun, FaCloud, FaCloudRain, FaSnowflake } from 'react-icons/fa'
-import { WiDaySunny, WiCloudy, WiRain, WiSnow, WiFog } from 'react-icons/wi'
+import { WiDaySunny, WiCloudy, WiRain, WiSnow, WiFog, WiThermometer } from 'react-icons/wi'
+import { FiWind } from 'react-icons/fi'
 import Card from '../ui/Card'
 
 interface RealWeatherCardProps {
@@ -16,18 +16,18 @@ interface RealWeatherCardProps {
 }
 
 const getWeatherIcon = (condition: string) => {
-  if (condition.includes('맑음')) return <WiDaySunny className="text-yellow-500" />
-  if (condition.includes('구름')) return <WiCloudy className="text-gray-500" />
-  if (condition.includes('흐림')) return <WiFog className="text-gray-600" />
-  if (condition.includes('비')) return <WiRain className="text-blue-500" />
-  if (condition.includes('눈')) return <WiSnow className="text-blue-200" />
-  return <WiDaySunny className="text-yellow-500" />
+  if (condition.includes('맑음')) return <WiDaySunny className="text-yellow-400" />
+  if (condition.includes('구름')) return <WiCloudy className="text-gray-400" />
+  if (condition.includes('흐림')) return <WiFog className="text-gray-500" />
+  if (condition.includes('비')) return <WiRain className="text-blue-400" />
+  if (condition.includes('눈')) return <WiSnow className="text-blue-300" />
+  return <WiDaySunny className="text-yellow-400" />
 }
 
 const getDustColor = (dust: string) => {
-  if (dust === '좋음') return 'text-green-600'
-  if (dust === '보통') return 'text-yellow-600'
-  return 'text-red-600'
+  if (dust === '좋음') return 'bg-green-100 text-green-700 border-green-200'
+  if (dust === '보통') return 'bg-yellow-100 text-yellow-700 border-yellow-200'
+  return 'bg-red-100 text-red-700 border-red-200'
 }
 
 export default function RealWeatherCard({ 
@@ -44,42 +44,56 @@ export default function RealWeatherCard({
       transition={{ duration: 0.6, ease: "easeOut" }}
       className="animate-glass-appear"
     >
-      <Card className="glass-strong border-white/20 hover:border-white/30">
-        <div className="flex items-center gap-3 mb-4">
-          <FaSun className="text-2xl text-blue-400 drop-shadow-lg" />
-          <h2 className="text-h3 text-gray-900 font-semibold">진짜 오늘의 날씨</h2>
+      <Card className="glass-card rounded-3xl shadow-2xl">
+        <div className="flex items-center gap-4 mb-6">
+          <div className="p-2 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl shadow-lg">
+            <WiThermometer className="text-xl text-white" />
+          </div>
+          <h2 className="text-xl font-bold text-gray-800">오늘의 날씨</h2>
         </div>
-        <div className="space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="text-3xl drop-shadow-lg">{getWeatherIcon(condition)}</div>
-            <div>
-              <p className="text-2xl font-bold text-gray-900 drop-shadow">
-                {condition}, {temp}
-              </p>
-              <div className="flex items-center gap-2 mt-1">
-                <span className="text-small text-gray-600">미세먼지</span>
-                <span className={`text-small font-medium ${getDustColor(dust)} drop-shadow-sm`}>{dust}</span>
+        
+        <div className="space-y-6">
+          {/* 메인 날씨 정보 */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="text-5xl drop-shadow-lg">{getWeatherIcon(condition)}</div>
+              <div>
+                <p className="text-3xl font-bold text-gray-900 mb-1">{temp}</p>
+                <p className="text-lg text-gray-700 font-medium">{condition}</p>
               </div>
             </div>
           </div>
           
+          {/* 미세먼지 정보 */}
+          <div className="flex items-center gap-3">
+            <FiWind className="text-lg text-gray-500" />
+            <span className="text-sm text-gray-700 font-medium">미세먼지</span>
+            <span className={`px-3 py-1 rounded-full text-xs font-bold border ${getDustColor(dust)}`}>
+              {dust}
+            </span>
+          </div>
+          
+          {/* 시간별 예보 */}
           {hourlyForecast && hourlyForecast.length > 0 && (
-            <div className="glass p-3 rounded-lg border border-white/10">
-              <p className="text-small text-gray-600 mb-2">시간별 예보</p>
-              <div className="flex gap-4">
-                {hourlyForecast.slice(0, 3).map((forecast, index) => (
-                  <div key={index} className="text-center">
-                    <p className="text-xs text-gray-500">{forecast.time}</p>
-                    <div className="text-lg drop-shadow">{getWeatherIcon(forecast.condition)}</div>
-                    <p className="text-xs font-medium">{forecast.temp}</p>
+            <div className="glass-card p-4 rounded-2xl">
+              <p className="text-sm font-bold text-gray-800 mb-3">시간별 예보</p>
+              <div className="flex justify-between">
+                {hourlyForecast.slice(0, 4).map((forecast, index) => (
+                  <div key={index} className="text-center flex-1">
+                    <p className="text-xs text-gray-600 font-medium mb-2">{forecast.time}</p>
+                    <div className="text-2xl mb-2 flex justify-center">{getWeatherIcon(forecast.condition)}</div>
+                    <p className="text-sm font-bold text-gray-900">{forecast.temp}</p>
                   </div>
                 ))}
               </div>
             </div>
           )}
           
+          {/* 설명 */}
           {description && (
-            <p className="text-small text-gray-700 glass p-3 rounded-lg border border-white/10">{description}</p>
+            <div className="glass-card p-4 rounded-2xl">
+              <p className="text-sm text-gray-800 leading-relaxed font-medium">{description}</p>
+            </div>
           )}
         </div>
       </Card>

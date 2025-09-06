@@ -39,7 +39,7 @@ export default function NewsCard({ title, IconComponent, items, delay = 0 }: New
       transition={{ delay, duration: 0.6, ease: "easeOut" }}
       className="animate-glass-appear"
     >
-      <Card className="glass-strong border-white/30 hover:border-white/40 shadow-xl">
+      <Card className="glass-card rounded-3xl shadow-2xl">
         <div className="flex items-center gap-4 mb-6">
           <div className="p-2 bg-gradient-to-br from-primary-400 to-primary-600 rounded-xl shadow-lg">
             <IconComponent className="text-xl text-white" />
@@ -49,14 +49,14 @@ export default function NewsCard({ title, IconComponent, items, delay = 0 }: New
         <div className="space-y-4">
           {items.length > 0 ? (
             items.map((item, index) => (
-              <div key={index} className="p-5 glass rounded-2xl border border-white/20 hover:glass-strong transition-all duration-300 shadow-lg">
+              <div key={index} className="p-6 glass-card rounded-2xl hover:scale-[1.02] transition-all duration-300">
                 <div className="flex items-start justify-between gap-3">
                   {item.url ? (
                     <a 
                       href={item.url} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="text-base font-semibold flex-1 text-gray-800 hover:text-primary-600 transition-colors cursor-pointer underline-offset-2 hover:underline leading-snug"
+                      className="text-base font-semibold flex-1 text-gray-800 hover:text-primary-600 transition-colors cursor-pointer underline-offset-2 hover:underline leading-snug line-clamp-2"
                     >
                       {item.title}
                     </a>
@@ -65,12 +65,12 @@ export default function NewsCard({ title, IconComponent, items, delay = 0 }: New
                       href={generateNaverMapUrl(item.title, item.address)} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="text-base font-semibold flex-1 text-gray-800 hover:text-primary-600 transition-colors cursor-pointer underline-offset-2 hover:underline leading-snug"
+                      className="text-base font-semibold flex-1 text-gray-800 hover:text-primary-600 transition-colors cursor-pointer underline-offset-2 hover:underline leading-snug line-clamp-2"
                     >
                       {item.title}
                     </a>
                   ) : (
-                    <p className="text-base font-semibold flex-1 text-gray-800 leading-snug">{item.title}</p>
+                    <p className="text-base font-semibold flex-1 text-gray-800 leading-snug line-clamp-2">{item.title}</p>
                   )}
                   {item.viewCount !== undefined && (
                     <span className="text-sm text-gray-600 font-medium whitespace-nowrap flex items-center gap-1.5 bg-white/50 px-2 py-1 rounded-full">
@@ -95,7 +95,7 @@ export default function NewsCard({ title, IconComponent, items, delay = 0 }: New
           ) : (
             <div className="space-y-4">
               {[...Array(3)].map((_, index) => (
-                <div key={index} className="p-5 glass rounded-2xl border border-white/20 shadow-lg">
+                <div key={index} className="p-6 glass-card rounded-2xl">
                   <div className="animate-pulse">
                     <div className="h-5 bg-white/40 rounded-lg w-3/4 mb-3"></div>
                     <div className="h-4 bg-white/30 rounded-lg w-1/2 mb-2"></div>

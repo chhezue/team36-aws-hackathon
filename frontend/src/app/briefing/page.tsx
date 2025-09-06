@@ -1,13 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { HiSun, HiChat, HiLocationMarker, HiSparkles } from 'react-icons/hi'
+import { useState, useEffect, useCallback } from 'react'
+import { HiChat, HiLocationMarker, HiSparkles } from 'react-icons/hi'
 import Header from '@/components/layout/Header'
 import RealWeatherCard from '@/components/briefing/RealWeatherCard'
 import SentimentCard from '@/components/briefing/SentimentCard'
 import NewsCard from '@/components/briefing/NewsCard'
 import SentimentModal from '@/components/briefing/SentimentModal'
-import Button from '@/components/ui/Button'
 import { WeatherSkeleton, NewsSkeleton } from '@/components/ui/Skeleton'
 import { api } from '@/lib/api'
 
@@ -34,16 +33,7 @@ interface BriefingData {
         collected_at: string
       }>
     }
-    announcements: {
-      title: string
-      emoji: string
-      items: Array<{
-        title: string
-        department: string
-        view_count: number
-        created_at: string
-      }>
-    }
+
     new_restaurants: {
       title: string
       emoji: string
@@ -92,13 +82,7 @@ export default function BriefingPage() {
     console.log('========================');
   }, [])
   
-  useEffect(() => {
-    if (selectedDistrict) {
-      fetchBriefingData()
-    }
-  }, [selectedDate, selectedDistrict])
-
-  const fetchBriefingData = async () => {
+  const fetchBriefingData = useCallback(async () => {
     try {
       setLoading(true)
       const [briefingResponse, weatherResponse] = await Promise.all([
@@ -130,7 +114,13 @@ export default function BriefingPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [selectedDistrict])
+
+  useEffect(() => {
+    if (selectedDistrict) {
+      fetchBriefingData()
+    }
+  }, [selectedDate, selectedDistrict, fetchBriefingData])
 
   const formatDate = (date: Date) => {
     const days = ['일', '월', '화', '수', '목', '금', '토']
@@ -184,7 +174,7 @@ export default function BriefingPage() {
         <NewsSkeleton />
       ) : (
         <NewsCard 
-          title="💬 동네 이슈"
+          title="동네 이슈"
           IconComponent={HiChat}
           items={briefingData?.categories?.local_issues?.items?.map(issue => ({
             title: issue.title,
@@ -200,11 +190,11 @@ export default function BriefingPage() {
         <NewsSkeleton />
       ) : (
         <NewsCard 
-          title="✨ 핫플 음식점"
+          title="핫플 음식점"
           IconComponent={HiSparkles}
-          items={briefingData?.categories?.popular_restaurants?.items?.map(restaurant => ({
+          items={briefingData?.categories?.new_restaurants?.items?.map(restaurant => ({
             title: restaurant.name,
-            source: '핫플 맛집',
+            source: restaurant.license_date,
             address: restaurant.address,
             category: restaurant.type
           })) || []}
@@ -214,19 +204,19 @@ export default function BriefingPage() {
 
       {loading ? (
         <NewsSkeleton />
-      ) : (
+      ) : briefingData?.categories?.new_restaurants?.items && briefingData.categories.new_restaurants.items.length > 0 ? (
         <NewsCard 
-          title="🆕 신규 개업 음식점"
+          title="신규 개업 음식점"
           IconComponent={HiLocationMarker}
-          items={briefingData?.categories?.new_restaurants?.items?.map(restaurant => ({
+          items={briefingData.categories.new_restaurants.items.map(restaurant => ({
             title: restaurant.name,
             source: restaurant.license_date,
             address: restaurant.address,
             category: restaurant.type
-          })) || []}
+          }))}
           delay={0.3}
         />
-      )}
+      ) : null}
 
       {briefingData?.sentiment && (
         <SentimentModal 

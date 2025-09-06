@@ -15,7 +15,7 @@ SECRET_KEY = 'django-insecure-prototype-key-change-in-production'
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
 
 INSTALLED_APPS = [
     'django.contrib.contenttypes',
@@ -53,7 +53,7 @@ DATABASES = {
         'HOST': os.environ.get('DB_HOST'),
         'PORT': os.environ.get('DB_PORT', '5432'),
         'OPTIONS': {
-            'connect_timeout': 20,
+            'connect_timeout': 60,
         }
     }
 }
@@ -113,13 +113,46 @@ if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     ALLOWED_HOSTS = ['*']  # 실제 도메인으로 변경 필요
 
+# 크롤링 설정
+CRAWLER_SETTINGS = {
+    'DEFAULT_TIMEOUT': 30,
+    'MAX_RETRIES': 3,
+    'BACKOFF_FACTOR': 2,
+    'MAX_CONCURRENT': 10,
+    'REQUEST_DELAY': 0.5,
+}
+
 # 로깅 설정
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': 'crawler.log',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'local_data.crawlers': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'local_data.optimized_crawler': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': False,
         },
     },
     'root': {

@@ -15,18 +15,19 @@ export default function LocationSelector({ selectedGu, onSelect }: LocationSelec
     const fetchDistricts = async () => {
       try {
         const response = await api.getDistricts()
-        if (response.success && response.districts) {
-          // 데이터가 있는 구만 표시
-          const availableDistricts = response.districts
-            .filter((district: any) => district.has_data)
-            .map((district: any) => district.name)
-          setDistricts(availableDistricts.length > 0 ? availableDistricts : response.districts.map((d: any) => d.name))
+        if (response.districts) {
+          setDistricts(response.districts)
         } else {
           throw new Error('데이터 형식 오류')
         }
       } catch (error) {
         console.error('구 데이터 로드 실패:', error)
-        setDistricts(['강남구', '강동구', '강북구']) // fallback
+        setDistricts([
+          '강남구', '강동구', '강북구', '강서구', '관악구', '광진구', '구로구', '금천구',
+          '노원구', '도봉구', '동대문구', '동작구', '마포구', '서대문구', '서초구',
+          '성동구', '성북구', '송파구', '양천구', '영등포구', '용산구', '은평구',
+          '종로구', '중구', '중랑구'
+        ])
       } finally {
         setLoading(false)
       }

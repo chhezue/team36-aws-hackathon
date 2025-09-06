@@ -9,6 +9,17 @@ logger.setLevel(logging.INFO)
 
 def lambda_handler(event, context):
     """날씨 정보 조회 Lambda 함수"""
+    # OPTIONS 요청 처리
+    if event.get('httpMethod') == 'OPTIONS':
+        return {
+            'statusCode': 200,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+                'Access-Control-Allow-Methods': 'GET,POST,OPTIONS'
+            },
+            'body': ''
+        }
     
     try:
         # 요청 파라미터 추출

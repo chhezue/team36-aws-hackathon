@@ -152,7 +152,7 @@ export default function BriefingPage() {
   return (
     <div className="min-h-screen px-4 py-8 max-w-md mx-auto space-y-8">
       <Header 
-        title="LocalBriefing"
+        title="VibeThermo"
         subtitle={`📍 ${selectedDistrict}\n${formatDate(selectedDate)}`}
         showSentiment
         showSettings

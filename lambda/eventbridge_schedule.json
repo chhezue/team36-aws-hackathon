@@ -1,15 +1,15 @@
 {
   "Rules": [
     {
-      "Name": "DailyBriefingCrawler",
-      "Description": "매일 새벽 4시에 크롤링 실행",
-      "ScheduleExpression": "cron(0 4 * * ? *)",
+      "Name": "DailyMidnightCrawler",
+      "Description": "매일 자정에 모든 구 크롤링 실행",
+      "ScheduleExpression": "cron(0 0 * * ? *)",
       "State": "ENABLED",
       "Targets": [
         {
           "Id": "1",
-          "Arn": "arn:aws:lambda:ap-northeast-2:ACCOUNT_ID:function:localbriefing-scheduled-crawler",
-          "Input": "{\"trigger\": \"scheduled\"}"
+          "Arn": "arn:aws:lambda:us-east-1:ACCOUNT_ID:function:localbriefing-crawler",
+          "Input": "{\"source\": \"eventbridge\"}"
         }
       ]
     }

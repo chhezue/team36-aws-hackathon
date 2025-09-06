@@ -22,7 +22,7 @@ def lambda_handler(event, context):
         try:
             cloudwatch = boto3.client('cloudwatch')
             cloudwatch.put_metric_data(
-                Namespace='LocalBriefing/Crawler',
+                Namespace='VibeThermo/Crawler',
                 MetricData=[
                     {
                         'MetricName': 'IssuesCollected',

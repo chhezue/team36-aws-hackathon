@@ -1,4 +1,4 @@
-# 🚀 LocalBriefing Lambda Functions
+# 🚀 VibeThermo Lambda Functions
 
 Django에서 AWS Lambda로 전환된 크롤링 시스템
 

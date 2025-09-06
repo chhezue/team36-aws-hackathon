@@ -26,6 +26,18 @@ def get_db_connection():
 
 def lambda_handler(event, context):
     """메인 Lambda 핸들러"""
+    # OPTIONS 요청 처리
+    if event.get('httpMethod') == 'OPTIONS':
+        return {
+            'statusCode': 200,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+                'Access-Control-Allow-Methods': 'GET,POST,OPTIONS'
+            },
+            'body': ''
+        }
+    
     try:
         # 이벤트에서 파라미터 추출
         district = event.get('district')  # 특정 구 또는 None (전체)
@@ -53,7 +65,7 @@ def lambda_handler(event, context):
         # CloudWatch 메트릭 전송
         cloudwatch = boto3.client('cloudwatch')
         cloudwatch.put_metric_data(
-            Namespace='LocalBriefing/Crawler',
+            Namespace='VibeThermo/Crawler',
             MetricData=[
                 {
                     'MetricName': 'IssuesCollected',

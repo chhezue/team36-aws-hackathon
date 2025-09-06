@@ -1,6 +1,6 @@
-# LocalBriefing 문서 가이드
+# VibeThermo 문서 가이드
 
-LocalBriefing 프로젝트의 전체 문서 모음입니다.
+VibeThermo 프로젝트의 전체 문서 모음입니다.
 
 ## 📋 핵심 문서
 

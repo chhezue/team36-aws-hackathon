@@ -2,8 +2,12 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'LocalBriefing',
-  description: '우리 동네 소식을 매일 아침 받아보세요',
+  title: 'VibeThermo',
+  description: '우리 동네 감성 온도를 매일 아침 체크하세요',
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.ico',
+  },
 }
 
 export default function RootLayout({

@@ -16,6 +16,18 @@ def get_db_connection():
 
 def lambda_handler(event, context):
     """데이터 조회 Lambda 함수"""
+    # OPTIONS 요청 처리
+    if event.get('httpMethod') == 'OPTIONS':
+        return {
+            'statusCode': 200,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+                'Access-Control-Allow-Methods': 'GET,POST,OPTIONS'
+            },
+            'body': ''
+        }
+    
     try:
         # 요청 타입 확인
         request_type = event.get('type', 'briefing')

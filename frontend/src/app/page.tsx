@@ -69,13 +69,20 @@ export default function OnboardingPage() {
             />
           </div>
 
-          <Button 
+          <button
             onClick={nextStep}
             disabled={!selectedGu}
-            className="w-full"
+            className={`w-full py-4 px-6 font-bold text-lg rounded-2xl shadow-xl transition-all duration-300 ${
+              !selectedGu 
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                : 'bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white hover:shadow-2xl hover:scale-105 active:scale-95'
+            }`}
           >
-            다음
-          </Button>
+            <span className="flex items-center justify-center gap-2">
+              다음 단계로
+              <span className="text-xl">→</span>
+            </span>
+          </button>
         </motion.div>
       )}
 
@@ -107,9 +114,15 @@ export default function OnboardingPage() {
             onSelectAll={selectAll}
           />
 
-          <Button onClick={nextStep} className="w-full">
-            완료
-          </Button>
+          <button
+            onClick={nextStep}
+            className="w-full py-4 px-6 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-white font-bold text-lg rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300"
+          >
+            <span className="flex items-center justify-center gap-2">
+              설정 완료
+              <span className="text-xl">✨</span>
+            </span>
+          </button>
         </motion.div>
       )}
 
@@ -133,13 +146,20 @@ export default function OnboardingPage() {
           </div>
 
           <div className="space-y-4">
-            <Button onClick={() => {
-              localStorage.setItem('selectedDistrict', selectedGu)
-              localStorage.setItem('selectedCategories', JSON.stringify(selectedCategories))
-              window.location.href = '/briefing'
-            }} className="w-full">
-              브리핑 보러가기
-            </Button>
+            <button
+              onClick={() => {
+                localStorage.setItem('selectedDistrict', selectedGu)
+                localStorage.setItem('selectedCategories', JSON.stringify(selectedCategories))
+                window.location.href = '/briefing'
+              }}
+              className="w-full py-5 px-6 bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 text-white font-black text-xl rounded-2xl shadow-2xl hover:shadow-3xl hover:scale-105 active:scale-95 transition-all duration-300 border-0"
+            >
+              <span className="flex items-center justify-center gap-3">
+                <span className="text-2xl">🚀</span>
+                브리핑 보러가기
+                <span className="text-2xl">🚀</span>
+              </span>
+            </button>
           </div>
         </motion.div>
       )}

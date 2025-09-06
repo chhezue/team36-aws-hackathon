@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:with-api": "concurrently \"python3 ../local_api_server.py\" \"next dev\"",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "api": "python3 ../local_api_server.py"
   },
   "dependencies": {
     "axios": "^1.6.0",

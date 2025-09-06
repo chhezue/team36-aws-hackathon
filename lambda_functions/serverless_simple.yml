@@ -1,0 +1,41 @@
+service: localbriefing-simple
+
+provider:
+  name: aws
+  runtime: python3.9
+  region: us-east-1
+  timeout: 300  # 5분
+  memorySize: 512
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - cloudwatch:PutMetricData
+        - logs:CreateLogGroup
+        - logs:CreateLogStream
+        - logs:PutLogEvents
+      Resource: "*"
+
+functions:
+  # 간단한 크롤링 함수
+  crawler:
+    handler: crawler_handler_simple.lambda_handler
+    events:
+      # 매일 새벽 4시 (KST) = UTC 19시
+      - schedule: cron(0 19 * * ? *)
+    
+  # API Gateway 연동 (수동 실행용)
+  crawlerApi:
+    handler: crawler_handler_simple.lambda_handler
+    events:
+      - http:
+          path: /crawl
+          method: post
+          cors: true
+
+plugins:
+  - serverless-python-requirements
+
+custom:
+  pythonRequirements:
+    dockerizePip: false
+    fileName: requirements_simple.txt

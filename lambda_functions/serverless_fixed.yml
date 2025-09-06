@@ -1,0 +1,62 @@
+service: localbriefing-lambda
+
+provider:
+  name: aws
+  runtime: python3.9
+  region: us-east-1
+  timeout: 900
+  memorySize: 1024
+  environment:
+    DB_HOST: ${env:DB_HOST}
+    DB_NAME: ${env:DB_NAME}
+    DB_USER: ${env:DB_USER}
+    DB_PASSWORD: ${env:DB_PASSWORD}
+    SEOUL_API_KEY: ${env:SEOUL_API_KEY}
+    KAKAO_API_KEY: ${env:KAKAO_API_KEY}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - rds:*
+        - cloudwatch:PutMetricData
+        - logs:*
+      Resource: "*"
+
+functions:
+  crawler:
+    handler: crawler_handler.lambda_handler
+    events:
+      - schedule: cron(0 19 * * ? *)
+    layers:
+      - {Ref: CrawlerLambdaLayer}
+
+  restaurant:
+    handler: restaurant_handler.lambda_handler
+    events:
+      - schedule: cron(0 18 ? * SUN *)
+    layers:
+      - {Ref: CrawlerLambdaLayer}
+
+  crawlerApi:
+    handler: crawler_handler.lambda_handler
+    events:
+      - http:
+          path: /crawl
+          method: post
+          cors: true
+    layers:
+      - {Ref: CrawlerLambdaLayer}
+
+layers:
+  crawler:
+    path: layers/crawler
+    name: localbriefing-crawler-layer
+    compatibleRuntimes:
+      - python3.9
+
+plugins:
+  - serverless-python-requirements
+
+custom:
+  pythonRequirements:
+    dockerizePip: false
+    fileName: requirements_fixed.txt

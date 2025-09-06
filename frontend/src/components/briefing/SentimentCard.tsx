@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
-import { HiSparkles, HiInformationCircle } from 'react-icons/hi'
-import { FaThermometerHalf } from 'react-icons/fa'
+import { HiInformationCircle } from 'react-icons/hi'
+import { FaThermometerHalf, FaSun, FaCloudSun, FaCloud, FaCloudRain, FaSnowflake } from 'react-icons/fa'
 import { useState } from 'react'
 import Card from '../ui/Card'
 
@@ -9,6 +9,7 @@ interface NewsItem {
   source: string
   url?: string
   view_count?: number
+  collected_at?: string
 }
 
 interface SentimentCardProps {
@@ -17,6 +18,14 @@ interface SentimentCardProps {
   description: string
   influentialNews?: NewsItem[]
   onClick?: () => void
+}
+
+const getMoodIcon = (temp: number) => {
+  if (temp >= 80) return <FaSun className="text-4xl text-yellow-500" />
+  if (temp >= 60) return <FaCloudSun className="text-4xl text-orange-500" />
+  if (temp >= 40) return <FaCloud className="text-4xl text-teal-500" />
+  if (temp >= 20) return <FaCloudRain className="text-4xl text-blue-500" />
+  return <FaSnowflake className="text-4xl text-gray-500" />
 }
 
 const getTempGradient = (temp: number) => {
@@ -43,6 +52,12 @@ export default function SentimentCard({
   onClick
 }: SentimentCardProps) {
   const [showTooltip, setShowTooltip] = useState(false)
+  
+  // 디버깅용 로그
+  console.log('=== SentimentCard 디버깅 ===');
+  console.log('influentialNews:', influentialNews);
+  console.log('influentialNews 길이:', influentialNews?.length || 0);
+  console.log('========================');
   return (
     <motion.div 
       initial={{ opacity: 0, y: 30, scale: 0.95 }}
@@ -67,24 +82,38 @@ export default function SentimentCard({
                 <div className="flex items-center gap-2">
                   <h2 className="text-lg font-bold text-gray-900">감성 온도계</h2>
                   <div className="relative">
-                    {showTooltip && influentialNews.length > 0 && (
-                      <div className="absolute top-6 left-0 z-50 w-80 p-4 glass-modal rounded-xl border border-white/30 shadow-2xl">
-                        <h4 className="text-sm font-bold text-gray-900 mb-3">온도에 영향을 준 주요 소식</h4>
-                        <div className="space-y-2 max-h-48 overflow-y-auto">
+                    <HiInformationCircle 
+                      className="text-gray-500 hover:text-gray-700 cursor-pointer transition-colors" 
+                      onMouseEnter={() => setShowTooltip(true)}
+                      onMouseLeave={() => setShowTooltip(false)}
+                    />
+                    {showTooltip && influentialNews && influentialNews.length > 0 && (
+                      <div className="absolute top-6 left-0 z-50 w-96 p-6 glass-modal rounded-2xl border border-white/40 shadow-2xl backdrop-blur-xl bg-white/95">
+                        <div className="flex items-center gap-2 mb-4">
+                          <FaThermometerHalf className="text-lg text-red-500" />
+                          <h4 className="text-sm font-bold text-gray-900">온도에 영향을 준 주요 소식</h4>
+                        </div>
+                        <div className="space-y-3 max-h-64 overflow-y-auto custom-scrollbar">
                           {influentialNews.slice(0, 5).map((news, index) => (
-                            <div key={index} className="p-2 glass rounded-lg border border-white/20">
-                              <p className="text-xs font-medium text-gray-800 line-clamp-2 mb-1">
+                            <motion.div 
+                              key={index} 
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: index * 0.1 }}
+                              className="p-3 glass rounded-xl border border-white/30 hover:border-white/50 transition-all duration-200 hover:shadow-lg"
+                            >
+                              <p className="text-xs font-medium text-gray-800 line-clamp-2 mb-2 leading-relaxed">
                                 {news.title}
                               </p>
                               <div className="flex justify-between items-center">
-                                <span className="text-xs text-gray-600">{news.source}</span>
+                                <span className="text-xs text-gray-600 font-medium">{news.source}</span>
                                 {news.view_count && (
-                                  <span className="text-xs text-gray-500">
+                                  <span className="text-xs text-gray-500 bg-gray-100/80 px-2 py-1 rounded-full">
                                     조회 {news.view_count.toLocaleString()}
                                   </span>
                                 )}
                               </div>
-                            </div>
+                            </motion.div>
                           ))}
                         </div>
                       </div>
@@ -102,8 +131,10 @@ export default function SentimentCard({
             <div className="relative">
               <div className={`inline-flex items-center justify-center w-32 h-32 rounded-full ${getTempBg(temperature)} border-4 border-white/90 shadow-2xl backdrop-blur-sm`}>
                 <div className="text-center">
-                  <div className="text-5xl mb-2">{moodEmoji}</div>
-                  <div className={`text-3xl font-black bg-gradient-to-r ${getTempGradient(temperature)} bg-clip-text text-transparent`}>
+                  <div className="mb-2 flex items-center justify-center">
+                    {getMoodIcon(temperature)}
+                  </div>
+                  <div className={`text-3xl font-black items-center justify-center bg-gradient-to-r ${getTempGradient(temperature)} bg-clip-text text-transparent`}>
                     {temperature}°
                   </div>
                 </div>
@@ -123,9 +154,9 @@ export default function SentimentCard({
               <p className="text-base text-gray-800 leading-relaxed font-medium">
                 오늘 우리 동네는 
                 <span className={`font-bold bg-gradient-to-r ${getTempGradient(temperature)} bg-clip-text text-transparent ml-1 drop-shadow-sm`}>
-                  {description}
+                  {description} 날씨
                 </span>
-                이에요.
+                 예요.
               </p>
             </div>
           </div>

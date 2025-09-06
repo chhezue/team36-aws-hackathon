@@ -20,6 +20,13 @@ interface BriefingData {
     description: string
     positive_ratio: number
     negative_ratio: number
+    influential_news?: Array<{
+      title: string
+      source: string
+      url: string
+      view_count: number
+      collected_at: string
+    }>
   }
   categories: {
     local_issues: {
@@ -90,22 +97,32 @@ export default function BriefingPage() {
         api.getWeather(selectedDistrict)
       ])
       
-      console.log('=== API 응답 디버깅 ===');
+      console.log('=== Lambda API 응답 디버깅 ===');
       console.log('요청한 구:', selectedDistrict);
       console.log('브리핑 데이터:', briefingResponse)
-      console.log('브리핑 성공:', briefingResponse.success)
-      console.log('동네 이슈 개수:', briefingResponse?.categories?.local_issues?.items?.length || 0)
       console.log('날씨 데이터:', weatherResponse)
       console.log('========================')
       
-      if (briefingResponse.success) {
-        setBriefingData(briefingResponse)
+      // Lambda API 응답 구조에 맞게 수정
+      if (briefingResponse.success || briefingResponse.data) {
+        setBriefingData(briefingResponse.data || briefingResponse)
       } else {
         console.error('브리핑 데이터 오류:', briefingResponse.error)
       }
       
-      if (weatherResponse.success) {
-        setWeatherData(weatherResponse)
+      if (weatherResponse.success || weatherResponse.data) {
+        const weatherInfo = weatherResponse.data || weatherResponse
+        setWeatherData({
+          success: true,
+          district: selectedDistrict,
+          weather: {
+            temp: weatherInfo.temp || '--°C',
+            condition: weatherInfo.condition || '정보 없음',
+            dust: weatherInfo.dust || '--',
+            description: weatherInfo.description || '날씨 정보를 불러올 수 없습니다',
+            hourly_forecast: weatherInfo.hourly_forecast || []
+          }
+        })
       } else {
         console.error('날씨 데이터 오류:', weatherResponse.error)
       }
@@ -150,12 +167,7 @@ export default function BriefingPage() {
           temperature={briefingData.sentiment.temperature}
           moodEmoji={briefingData.sentiment.mood_emoji}
           description={briefingData.sentiment.description}
-          influentialNews={briefingData?.categories?.local_issues?.items?.slice(0, 5).map(issue => ({
-            title: issue.title,
-            source: issue.source,
-            url: issue.url,
-            view_count: issue.view_count
-          })) || []}
+          influentialNews={briefingData?.sentiment?.influential_news || []}
           onClick={() => setShowSentimentModal(true)}
         />
       ) : (

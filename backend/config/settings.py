@@ -53,12 +53,13 @@ DATABASES = {
         'HOST': os.environ.get('DB_HOST'),
         'PORT': os.environ.get('DB_PORT', '5432'),
         'OPTIONS': {
-            'connect_timeout': 60,
+            'connect_timeout': 10,
+            'options': '-c statement_timeout=30000'
         }
     }
 }
 
-print(f"DB 설정: {os.environ.get('DB_HOST')[:20]}... 사용 중")
+print(f"DB 설정: {os.environ.get('DB_HOST', 'localhost')[:20]}... 사용 중")
 
 LANGUAGE_CODE = 'ko-kr'
 TIME_ZONE = 'Asia/Seoul'

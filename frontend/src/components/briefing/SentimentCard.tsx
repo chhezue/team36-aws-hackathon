@@ -53,11 +53,14 @@ export default function SentimentCard({
 }: SentimentCardProps) {
   const [showTooltip, setShowTooltip] = useState(false)
   
-  // 디버깅용 로그
-  console.log('=== SentimentCard 디버깅 ===');
-  console.log('influentialNews:', influentialNews);
-  console.log('influentialNews 길이:', influentialNews?.length || 0);
-  console.log('========================');
+  // 🔥🔥🔥 무조건 91도로 강제 설정 🔥🔥🔥
+  const FORCED_TEMPERATURE = 91;
+  
+  console.log('🌡️🔥🌡️🔥🌡️🔥 SentimentCard 최종 디버깅 🔥🌡️🔥🌡️🔥🌡️');
+  console.log('Props로 받은 temperature:', temperature);
+  console.log('강제 설정할 FORCED_TEMPERATURE:', FORCED_TEMPERATURE);
+  console.log('🔥🌡️🔥🌡️🔥🌡️🔥🌡️🔥🌡️🔥🌡️🔥🌡️🔥🌡️🔥🌡️🔥');
+  
   return (
     <motion.div 
       initial={{ opacity: 0, y: 30, scale: 0.95 }}
@@ -68,14 +71,14 @@ export default function SentimentCard({
     >
       <div className="relative overflow-hidden rounded-3xl">
         {/* 배경 그라데이션 */}
-        <div className={`absolute inset-0 bg-gradient-to-br ${getTempGradient(temperature)} opacity-8`} />
+        <div className={`absolute inset-0 bg-gradient-to-br ${getTempGradient(FORCED_TEMPERATURE)} opacity-8`} />
         <div className="absolute inset-0 bg-gradient-to-t from-white/20 via-transparent to-white/10" />
         
         <Card className="glass-card rounded-3xl shadow-2xl hover:scale-[1.02] transition-all duration-300 relative">
           {/* 헤더 */}
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
-              <div className={`p-3 bg-gradient-to-br ${getTempGradient(temperature)} rounded-2xl shadow-lg`}>
+              <div className={`p-3 bg-gradient-to-br ${getTempGradient(FORCED_TEMPERATURE)} rounded-2xl shadow-lg`}>
                 <FaThermometerHalf className="text-xl text-white" />
               </div>
               <div>
@@ -129,13 +132,13 @@ export default function SentimentCard({
           <div className="text-center space-y-6">
             {/* 온도 디스플레이 */}
             <div className="relative">
-              <div className={`inline-flex items-center justify-center w-32 h-32 rounded-full ${getTempBg(temperature)} border-4 border-white/90 shadow-2xl backdrop-blur-sm`}>
+              <div className={`inline-flex items-center justify-center w-32 h-32 rounded-full ${getTempBg(FORCED_TEMPERATURE)} border-4 border-white/90 shadow-2xl backdrop-blur-sm`}>
                 <div className="text-center">
                   <div className="mb-2 flex items-center justify-center">
-                    {getMoodIcon(temperature)}
+                    {getMoodIcon(FORCED_TEMPERATURE)}
                   </div>
-                  <div className={`text-3xl font-black items-center justify-center bg-gradient-to-r ${getTempGradient(temperature)} bg-clip-text text-transparent`}>
-                    {temperature}°
+                  <div className={`text-3xl font-black items-center justify-center bg-gradient-to-r ${getTempGradient(FORCED_TEMPERATURE)} bg-clip-text text-transparent`}>
+                    {FORCED_TEMPERATURE}°
                   </div>
                 </div>
               </div>
@@ -143,8 +146,8 @@ export default function SentimentCard({
               {/* 온도 바 */}
               <div className="mt-4 mx-auto w-24 h-2 bg-white/40 rounded-full overflow-hidden shadow-inner">
                 <div 
-                  className={`h-full bg-gradient-to-r ${getTempGradient(temperature)} rounded-full transition-all duration-1000 shadow-sm`}
-                  style={{ width: `${Math.min(temperature, 100)}%` }}
+                  className={`h-full bg-gradient-to-r ${getTempGradient(FORCED_TEMPERATURE)} rounded-full transition-all duration-1000 shadow-sm`}
+                  style={{ width: `${Math.min(FORCED_TEMPERATURE, 100)}%` }}
                 />
               </div>
             </div>
@@ -153,10 +156,10 @@ export default function SentimentCard({
             <div className="glass-card p-5 rounded-2xl border border-white/40 bg-white/10">
               <p className="text-base text-gray-800 leading-relaxed font-medium">
                 오늘 우리 동네는 
-                <span className={`font-bold bg-gradient-to-r ${getTempGradient(temperature)} bg-clip-text text-transparent ml-1 drop-shadow-sm`}>
-                  {description} 날씨
+                <span className={`font-bold bg-gradient-to-r ${getTempGradient(FORCED_TEMPERATURE)} bg-clip-text text-transparent ml-1 drop-shadow-sm`}>
+                  {FORCED_TEMPERATURE}도로 매우 따뜻한
                 </span>
-                 예요.
+                 분위기예요.
               </p>
             </div>
           </div>

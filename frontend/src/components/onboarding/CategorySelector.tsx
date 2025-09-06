@@ -3,7 +3,7 @@ import { HiSun, HiChat, HiLocationMarker, HiSparkles } from 'react-icons/hi'
 interface Category {
   id: string
   name: string
-  icon: string
+  icon?: string
 }
 
 interface CategorySelectorProps {

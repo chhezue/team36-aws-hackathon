@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from local_data.models import Location, LocalIssue, RestaurantInfo, SentimentAnalysis, SentimentSummary
-from local_data.crawlers import LocalIssueCrawler
+from local_data.optimized_crawler import AsyncCrawlerWrapper as LocalIssueCrawler
 from django.utils import timezone
 import time
 
@@ -34,7 +34,7 @@ class Command(BaseCommand):
                 self.stdout.write(f'{district} 생성')
         
         # 4. 각 구별 크롤링 실행
-        crawler = LocalIssueCrawler()
+        crawler = LocalIssueCrawler(max_concurrent=5)
         
         for district in districts:
             self.stdout.write(f'\n=== {district} 크롤링 시작 ===')
@@ -43,7 +43,7 @@ class Command(BaseCommand):
                 location = Location.objects.get(gu=district)
                 
                 # 크롤링 실행 (각 구당 50개)
-                results = crawler.crawl_all(district, target_count=50)
+                results = crawler.crawl_single_district(district, 50)
                 
                 # DB 저장
                 saved_count = 0

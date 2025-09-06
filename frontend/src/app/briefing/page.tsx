@@ -150,6 +150,12 @@ export default function BriefingPage() {
           temperature={briefingData.sentiment.temperature}
           moodEmoji={briefingData.sentiment.mood_emoji}
           description={briefingData.sentiment.description}
+          influentialNews={briefingData?.categories?.local_issues?.items?.slice(0, 5).map(issue => ({
+            title: issue.title,
+            source: issue.source,
+            url: issue.url,
+            view_count: issue.view_count
+          })) || []}
           onClick={() => setShowSentimentModal(true)}
         />
       ) : (

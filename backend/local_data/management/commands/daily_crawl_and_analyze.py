@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 from datetime import datetime, timedelta
 from local_data.models import Location, LocalIssue, SentimentAnalysis, SentimentSummary
-from local_data.crawlers import LocalIssueCrawler
+from local_data.optimized_crawler import AsyncCrawlerWrapper as LocalIssueCrawler
 from local_data.sentiment_analyzer import SimpleSentimentAnalyzer, update_sentiment_summary
 
 class Command(BaseCommand):
@@ -19,7 +19,7 @@ class Command(BaseCommand):
         deleted_count = LocalIssue.objects.filter(collected_at__lt=week_ago).delete()[0]
         self.stdout.write(f"7일 이전 데이터 {deleted_count}개 삭제")
         
-        crawler = LocalIssueCrawler()
+        crawler = LocalIssueCrawler(max_concurrent=5)
         analyzer = SimpleSentimentAnalyzer()
         
         locations = Location.objects.all()
@@ -29,7 +29,7 @@ class Command(BaseCommand):
             self.stdout.write(f"\n=== {location.gu} 크롤링 시작 ===")
             
             # 크롤링 실행 (500개 목표)
-            results = crawler.crawl_all(location.gu, 500)
+            results = crawler.crawl_single_district(location.gu, 500)
             
             collected_count = 0
             for result in results:

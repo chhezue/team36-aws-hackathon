@@ -41,15 +41,6 @@ export default function Header({
       </div>
       
       <div className="flex gap-2">
-        {showSentiment && (
-          <button 
-            onClick={onSentiment}
-            className="p-3 glass-header rounded-xl hover:scale-110 transition-all duration-300 shadow-lg"
-            title="동네 분위기 보기"
-          >
-            <span className="text-lg drop-shadow">🌡️</span>
-          </button>
-        )}
         {showSettings && (
           <button 
             onClick={onSettings}

@@ -195,12 +195,12 @@ class Command(BaseCommand):
         self.stdout.write("1. 순차 처리 방식 테스트...")
         start_time = time.time()
         
-        from local_data.crawlers import LocalIssueCrawler
-        old_crawler = LocalIssueCrawler()
+        from local_data.optimized_crawler import AsyncCrawlerWrapper
+        old_crawler = AsyncCrawlerWrapper(max_concurrent=1)  # 순차 처리 시뮬레이션
         old_results = {}
         
         for district in test_districts:
-            district_results = old_crawler.crawl_all(district, limit)
+            district_results = old_crawler.crawl_single_district(district, limit)
             old_results[district] = district_results
         
         old_duration = time.time() - start_time

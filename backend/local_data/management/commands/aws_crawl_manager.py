@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 from datetime import datetime, timedelta
 from local_data.models import Location, LocalIssue, SentimentAnalysis
-from local_data.crawlers import LocalIssueCrawler
+from local_data.optimized_crawler import AsyncCrawlerWrapper as LocalIssueCrawler
 from local_data.sentiment_analyzer import SimpleSentimentAnalyzer
 from aws_services import AWSManager
 from concurrent.futures import ThreadPoolExecutor
@@ -108,11 +108,11 @@ class Command(BaseCommand):
         """구별 크롤링 및 감성 분석 처리"""
         self.stdout.write(f"처리 중: {location.gu}")
         
-        crawler = LocalIssueCrawler()
+        crawler = LocalIssueCrawler(max_concurrent=5)
         analyzer = SimpleSentimentAnalyzer()
         
         # 크롤링 실행
-        results = crawler.crawl_all(location.gu, limit)
+        results = crawler.crawl_single_district(location.gu, limit)
         collected_count = 0
         
         # 배치 처리를 위한 리스트

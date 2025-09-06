@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from local_data.models import Location, LocalIssue
-from local_data.crawlers import LocalIssueCrawler
+from local_data.optimized_crawler import AsyncCrawlerWrapper as LocalIssueCrawler
 from datetime import datetime
 
 class Command(BaseCommand):
@@ -10,7 +10,7 @@ class Command(BaseCommand):
         parser.add_argument('--district', type=str, help='특정 구만 크롤링')
 
     def handle(self, *args, **options):
-        crawler = LocalIssueCrawler()
+        crawler = LocalIssueCrawler(max_concurrent=5)
         
         if options['district']:
             locations = Location.objects.filter(gu=options['district'])
@@ -27,7 +27,7 @@ class Command(BaseCommand):
             LocalIssue.objects.filter(location=location, collected_at__lt=seven_days_ago).delete()
             
             # 크롤링 실행
-            results = crawler.crawl_all(location.gu)
+            results = crawler.crawl_single_district(location.gu, 50)
             
             # 데이터베이스에 저장
             from django.utils import timezone

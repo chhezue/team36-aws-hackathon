@@ -51,9 +51,9 @@ export default function OnboardingPage() {
               <FaMapMarkerAlt size={32} className="text-primary-500" />
             </div>
             <div>
-              <h1 className="text-h1 text-white mb-3 drop-shadow-lg">LocalBriefing</h1>
+              <h1 className="text-h1 text-white mb-3 drop-shadow-lg">VibeThermo</h1>
               <p className="text-body text-white/80 drop-shadow">
-                우리 동네 소식을 매일 아침 받아보세요
+                우리 동네 감성 온도를 매일 아침 체크하세요
               </p>
             </div>
           </div>

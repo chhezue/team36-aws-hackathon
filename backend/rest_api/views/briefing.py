@@ -113,11 +113,21 @@ def get_briefing(request):
             business_status_name='영업'
         ).order_by('-collected_at')[:5]
         
+        # 감성 온도 계산 결과에 영향을 준 뉴스 추가
+        sentiment_result = calculate_sentiment_temperature(sentiment_data)
+        sentiment_result['influential_news'] = [{
+            'title': issue.title,
+            'source': issue.get_source_display(),
+            'url': issue.url,
+            'view_count': issue.view_count,
+            'collected_at': issue.collected_at.strftime('%m/%d %H:%M')
+        } for issue in sentiment_data[:5]]  # 감성 분석에 사용된 상위 5개 데이터
+        
         data = {
             'success': True,
             'district': district,
             'date': today.isoformat(),
-            'sentiment': calculate_sentiment_temperature(sentiment_data),
+            'sentiment': sentiment_result,
             'categories': {
                 'local_issues': {
                     'title': '동네 이슈',

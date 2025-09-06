@@ -35,7 +35,7 @@ def run_frontend():
     subprocess.run(['npm', 'run', 'dev'])
 
 def main():
-    print("🚀 LocalBriefing 풀스택 서버를 시작합니다...")
+    print("🚀 VibeThermo 풀스택 서버를 시작합니다...")
     
     project_root = os.path.dirname(os.path.abspath(__file__))
     venv_python = os.path.join(project_root, 'venv', 'bin', 'python')

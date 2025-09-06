@@ -1,0 +1,20 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 온도계 배경 -->
+  <rect x="12" y="4" width="8" height="20" rx="4" fill="#6366f1" stroke="#4f46e5" stroke-width="1"/>
+  
+  <!-- 온도계 구 -->
+  <circle cx="16" cy="26" r="4" fill="#ef4444" stroke="#dc2626" stroke-width="1"/>
+  
+  <!-- 온도 표시선들 -->
+  <line x1="20" y1="8" x2="22" y2="8" stroke="#4f46e5" stroke-width="1"/>
+  <line x1="20" y1="12" x2="23" y2="12" stroke="#4f46e5" stroke-width="1"/>
+  <line x1="20" y1="16" x2="22" y2="16" stroke="#4f46e5" stroke-width="1"/>
+  <line x1="20" y1="20" x2="23" y2="20" stroke="#4f46e5" stroke-width="1"/>
+  
+  <!-- 감성 파동 효과 -->
+  <circle cx="16" cy="16" r="12" fill="none" stroke="#6366f1" stroke-width="1" opacity="0.3"/>
+  <circle cx="16" cy="16" r="14" fill="none" stroke="#8b5cf6" stroke-width="0.5" opacity="0.2"/>
+  
+  <!-- 하트 모양 (감성 표현) -->
+  <path d="M16 10c-1.5-2-4-2-4 0.5s2.5 3.5 4 5.5c1.5-2 4-3.5 4-5.5s-2.5-2.5-4-0.5z" fill="#f59e0b" opacity="0.8"/>
+</svg>

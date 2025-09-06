@@ -1,6 +1,6 @@
-# LocalBriefing Frontend
+# VibeThermo Frontend
 
-React/Next.js 기반 LocalBriefing 프론트엔드
+React/Next.js 기반 VibeThermo 프론트엔드
 
 ## 개발 환경 설정
 
